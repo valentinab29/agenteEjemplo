@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado 3 — Grid + CSS 2D Transforms</title>
+  <style>
+
+   body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: black;
+    }
+    /* ==========================================
+       ESTADO 2 — Grid Básico (SIN RESOLVER a propósito)
+       Este es el punto de partida para escribirlo en vivo en clase.
+       Sigue los TODO en orden — cada uno agrega UNA propiedad de la
+       tabla "Propiedades del contenedor" del recurso de Grid/Flexbox
+       (semana_03_recurso_css_grid_flexbox_tailwind.md).
+    ========================================== */
+    .grid-container {
+
+      /* TODO 1: activa Grid en este contenedor.
+         Propiedad: display
+         Valor: grid
+      */
+      display:grid;
+
+      /* TODO 2: define 3 columnas de 200px cada una.
+         Propiedad: grid-template-columns
+         Pista: puedes escribir "200px 200px 200px" a mano,
+         o usar el atajo repeat(3, 200px) — ambos hacen lo mismo.
+      */
+
+      grid-template-columns: 100px 2fr 1fr;
+
+      /* TODO 3: agrega espacio entre las celdas, sin usar márgenes.
+         Propiedad: gap
+         Valor sugerido: 15px
+      */
+      gap:10px;
+
+      /* Ya viene incluido, no lo toques: */
+      background-color: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .grid-item {
+      background-color: #3498db;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+
+    /* TODO 4 (opcional, para quien termine antes): alinea el
+       contenido de cada celda al centro verticalmente.
+       Propiedad: align-items (va en .grid-container, no en .grid-item)
+       Valor: center
+    */
+
+    /* Dark mode colors, toggled by JS via a class on <body> */
+    body.dark-mode {
+      background-color: #1c1c1c;
+    }
+
+    .dark-mode .grid-item {
+      background-color: #2c3e50;
+    }
+
+    .dark-mode h1{
+      color:aliceblue;
+    }
+
+    /* ==========================================
+       ESTADO 3 — CSS 2D Transforms
+       transform NO afecta el layout: el elemento se ve movido/rotado/
+       escalado/inclinado, pero el espacio que reserva en la página
+       sigue siendo el original y los elementos vecinos no se mueven.
+       Cada .transform-box de abajo aplica UNA función distinta al
+       pasar el mouse por encima (:hover), para poder comparar el
+       estado normal contra el transformado.
+    ========================================== */
+
+    /* Contenedor de la sección de ejemplos: un grid aparte del de arriba,
+       solo para acomodar las cajas de demostración en una fila. */
+    .transform-demo {
+      display: grid;
+      grid-template-columns: repeat(3, 150px);
+      gap: 40px;
+      margin-top: 40px;
+      /* padding extra para que las transformaciones (que pueden salirse
+         un poco de la caja original, ej. scale o rotate) no se corten
+         contra el borde de la sección */
+      padding: 30px;
+    }
+
+    .transform-box {
+      background-color: #e67e22;
+      color: white;
+      text-align: center;
+      padding: 25px 10px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      /* transition solo anima la propiedad transform: hace que el cambio
+         de estado normal -> :hover se vea suave en vez de un salto brusco.
+         Esto no es parte de "transform" en sí, pero se usa casi siempre junto. */
+      transition: transform 0.3s ease;
+    }
+
+    /* translate(x, y): mueve el elemento desde su posición original.
+       X positivo = derecha, X negativo = izquierda.
+       Y positivo = abajo, Y negativo = arriba.
+       El espacio original de la caja NO se libera ni se ocupa por otro
+       elemento: solo se ve movida. */
+    .box-translate:hover {
+      transform: translate(20px, -15px);
+    }
+
+    /* scale(x): agranda o achica el elemento. Es un multiplicador,
+       no píxeles: 1 = tamaño normal, 1.3 = 30% más grande, 0.7 = 30%
+       más chico. Un solo valor se aplica igual en ancho y alto. */
+    .box-scale:hover {
+      transform: scale(1.3);
+    }
+
+    /* rotate(deg): gira el elemento sobre su propio eje.
+       Positivo = sentido horario (como las manecillas del reloj).
+       Negativo = sentido antihorario. La unidad siempre es deg
+       (grados), o se puede usar turn (1turn = 360deg). */
+    .box-rotate:hover {
+      transform: rotate(15deg);
+    }
+
+    /* skew(x, y): inclina el elemento, dando un efecto de paralelogramo.
+       skewX inclina los lados verticales (como si empujaras el borde
+       de arriba hacia un lado); skewY inclina los lados horizontales.
+       También usa grados como unidad. */
+    .box-skew:hover {
+      transform: skewX(15deg);
+    }
+
+    /* transform-origin: por defecto toda transformación (rotate, scale,
+       skew) ocurre desde el CENTRO del elemento. transform-origin cambia
+       ese punto de anclaje. Aquí rotamos desde la esquina superior
+       izquierda ("top left") en vez del centro, para notar la diferencia
+       con .box-rotate (que rota desde el centro por defecto). */
+    .box-origin {
+      transform-origin: top left;
+    }
+    .box-origin:hover {
+      transform: rotate(15deg);
+    }
+
+    /* Combinar funciones: se escriben una después de otra separadas por
+       un espacio, dentro del mismo transform. El ORDEN importa: aquí
+       primero se rota 20deg y luego se traslada en X. Como la traslación
+       se aplica DESPUÉS de la rotación, el movimiento en X ocurre sobre
+       el eje ya rotado, no sobre el eje horizontal original de la página.
+       Por eso el efecto se ve como si el elemento "resbalara" en diagonal. */
+    .box-combo:hover {
+      transform: rotate(20deg) translateX(25px);
+    }
+
+  </style>
+
+
+</head>
+<body>
+  <h1 >Mi Primer Grid</h1>
+  <p style="margin: 20px 0;">Grid con 3 columnas de 200px cada una — completa los TODO del CSS.</p>
+
+  <div class="grid-container">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div class="grid-item">8</div>
+    <div id= "demo" class="grid-item">9</div>
+  </div>
+
+  <button id="my-button">Click me</button>
+  <button id="dark-mode-toggle">Modo oscuro</button>
+
+  <!-- ESTADO 3: sección de ejemplos de CSS 2D Transforms.
+       Pasa el mouse sobre cada caja para ver la función aplicada. -->
+  <h2>CSS 2D Transforms — pasa el mouse sobre cada caja</h2>
+  <div class="transform-demo">
+    <div class="transform-box box-translate">translate</div>
+    <div class="transform-box box-scale">scale</div>
+    <div class="transform-box box-rotate">rotate</div>
+    <div class="transform-box box-skew">skew</div>
+    <div class="transform-box box-origin">transform-origin</div>
+    <div class="transform-box box-combo">rotate + translateX</div>
+  </div>
+
+  <script>
+    const item = document.getElementById("demo");
+    const button = document.getElementById('my-button');
+
+    button.addEventListener('click', () => {
+      item.textContent="hola mundo";
+    });
+
+    // Dark mode toggle: switches the .dark-mode class on <body> on/off
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) { boton.textContent = '☀️ Modo claro'; }
+      else { boton.textContent = '🌙 Modo oscuro'; }
+
+
+    });
+
+  </script>
+</body>
+</html>

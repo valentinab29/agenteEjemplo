@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado 2 — Grid Básico (para completar en clase)</title>
+  <style>
+
+   body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: black;
+    }
+    /* ==========================================
+       ESTADO 2 — Grid Básico (SIN RESOLVER a propósito)
+       Este es el punto de partida para escribirlo en vivo en clase.
+       Sigue los TODO en orden — cada uno agrega UNA propiedad de la
+       tabla "Propiedades del contenedor" del recurso de Grid/Flexbox
+       (semana_03_recurso_css_grid_flexbox_tailwind.md).
+    ========================================== */
+    .grid-container {
+
+      /* TODO 1: activa Grid en este contenedor.
+         Propiedad: display
+         Valor: grid
+      */
+      display:grid;
+
+      /* TODO 2: define 3 columnas de 200px cada una.
+         Propiedad: grid-template-columns
+         Pista: puedes escribir "200px 200px 200px" a mano,
+         o usar el atajo repeat(3, 200px) — ambos hacen lo mismo.
+      */
+      
+      grid-template-columns: 100px 2fr 1fr;
+
+      /* TODO 3: agrega espacio entre las celdas, sin usar márgenes.
+         Propiedad: gap
+         Valor sugerido: 15px
+      */
+      gap:10px;
+
+      /* Ya viene incluido, no lo toques: */
+      background-color: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .grid-item {
+      background-color: #3498db;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+    @media (min-width: 300px){
+      .grid-item {
+         background-color: #0008db;
+      }
+    }
+
+    .grid-item-2 {
+      background-color: #3498db;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+    @media (min-width: 600px){
+      .grid-item-2 {
+         display:none;
+      }
+    }
+
+    .grid-item-3 {
+      background-color: #27ae60;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+
+    /* TODO 4 (opcional, para quien termine antes): alinea el
+       contenido de cada celda al centro verticalmente.
+       Propiedad: align-items (va en .grid-container, no en .grid-item)
+       Valor: center
+    */
+    
+    /* Dark mode colors, toggled by JS via a class on <body> */
+    body.dark-mode {
+      background-color: #1c1c1c;
+    }
+
+    .dark-mode .grid-item {
+      background-color: #2c3e50;
+    }
+
+    .dark-mode h1{
+      color:aliceblue;
+    }
+
+  </style>
+
+
+</head>
+<body>
+  <h1 >Mi Primer Grid</h1>
+  <p style="margin: 20px 0;">Grid con 3 columnas de 200px cada una — completa los TODO del CSS.</p>
+
+  <div class="grid-container">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div class="grid-item">8</div>
+    <div id= "demo" class="grid-item">9</div>
+  </div>
+
+ 
+
+  <button id="my-button">Click me</button>
+  <button id="dark-mode-toggle">🌙 Modo oscuro</button>
+
+
+
+  <div id="caja-2" class="grid-container">
+    <div class="grid-item-2">1</div>
+    <div class="grid-item-2">2</div>
+    <div class="grid-item-2">3</div>
+  </div>
+
+  <div id="caja-3" class="grid-container">
+    <div class="grid-item-3">1</div>
+    <div class="grid-item-3">2</div>
+    <div class="grid-item-3">3</div>
+  </div>
+
+
+  <script>
+    const item = document.getElementById("demo");
+    const button = document.getElementById('my-button');
+    
+    button.addEventListener('click', () => {
+      item.textContent="hola mundo";
+    });
+
+    // Dark mode toggle: switches the .dark-mode class on <body> on/off
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) 
+        { darkModeToggle.textContent = '☀️ Modo claro'; } 
+      else { darkModeToggle.textContent = '🌙 Modo oscuro'; }
+    });
+
+    // Hide #caja-3 above 600px, mirroring .grid-item-2's CSS media query but via JS
+    const caja3 = document.getElementById('caja-3');
+    const caja3Query = window.matchMedia('(min-width: 600px)');
+
+    function updateCaja3(e) {
+      caja3.style.display = e.matches ? 'none' : 'grid';
+    }
+
+    updateCaja3(caja3Query);
+    caja3Query.addEventListener('change', updateCaja3);
+
+
+  </script>
+</body>
+</html>
