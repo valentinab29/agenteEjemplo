@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- CDN: trae la librería de Supabase ANTES que nuestros propios
+       scripts — sin esta línea, "supabase.createClient" no existiría
+       todavía cuando supabaseClient.js intente usarlo -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* overflow-x: auto deja deslizar la tabla de lado en el celular
+       en vez de que se salga de la pantalla */
+    #tabla-productos { overflow-x: auto; margin-top: 1rem; }
+    table { border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; white-space: nowrap; }
+    th { background: #f0f0f0; }
+    td.num { text-align: right; }
+    /* object-fit: cover recorta la foto para llenar el cuadro sin deformarla */
+    img.miniatura { width: 60px; height: 60px; object-fit: cover; display: block; }
+  </style>
+</head>
+<body>
+
+  <button id="btn-traer">Traer productos</button>
+  <button id="btn-tabla">Ver tabla completa</button>
+  <div id="resultado"></div>
+
+  <!-- Paso 5: la tabla se dibuja aquí desde prueba.js -->
+  <div id="tabla-productos"></div>
+
+  <!-- supabaseClient.js crea "db" (sección 4.3): el cliente ya
+       conectado a tu proyecto de Supabase. Lo vamos a usar en
+       prueba.js, por eso tiene que cargarse ANTES que ese archivo -->
+  <script src="js/supabaseClient.js"></script>
+  <!-- prueba.js: aquí escribes el código de los Pasos 2, 3 y 4 -->
+  <script src="js/prueba.js"></script>
+</body>
+</html>

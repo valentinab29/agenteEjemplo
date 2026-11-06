@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-gestion">
+
+  <!-- Login: es lo único visible al abrir la página. gestion.js compara lo
+       escrito con "usuario" y "password" de credenciales.js; solo si coinciden
+       se oculta esta sección y se muestra (e inicializa) el .layout del CRUD. -->
+  <section id="login" class="login">
+    <div class="login-tarjeta">
+      <h1>Iniciar sesión</h1>
+      <form id="form-login" class="form-crud">
+        <label>
+          Usuario
+          <input type="text" id="login-usuario" autocomplete="username" required>
+        </label>
+
+        <label>
+          Contraseña
+          <input type="password" id="login-password" autocomplete="current-password" required>
+        </label>
+
+        <button type="submit" class="btn-crud">Entrar</button>
+      </form>
+      <p id="login-mensaje" class="mensaje mensaje-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- Empieza oculto: solo se muestra después de un login correcto. -->
+  <div class="layout" hidden>
+    <!-- Sidebar de navegación: cada botón muestra una "vista" distinta del
+         lado derecho (ver mostrarVista() en gestion.js). data-vista debe
+         coincidir con el id "vista-<algo>" de la sección que activa. -->
+    <nav class="sidebar">
+      <h2 class="sidebar-titulo">Gestión</h2>
+      <ul class="sidebar-menu">
+        <li><button class="sidebar-item" data-vista="crear">➕ Crear</button></li>
+        <li><button class="sidebar-item" data-vista="buscar">🔍 Buscar</button></li>
+        <li><button class="sidebar-item" data-vista="actualizar">✏️ Actualizar</button></li>
+        <li><button class="sidebar-item" data-vista="eliminar">🗑️ Eliminar</button></li>
+        <li><button class="sidebar-item" data-vista="todos">📋 Mostrar todos</button></li>
+      </ul>
+    </nav>
+
+    <main class="contenido">
+      <!-- Cada <section class="vista"> es un panel del CRUD; gestion.js oculta
+           todas menos la activa. -->
+      <section id="vista-crear" class="vista" hidden>
+        <h1>Crear</h1>
+        <!-- Un campo por cada propiedad del objeto "emocion" en data.js.
+             El submit lo maneja gestion.js (evento "submit" del form). -->
+        <form id="form-crear" class="form-crud">
+          <label>
+            Nombre
+            <input type="text" id="crear-nombre" required>
+          </label>
+
+          <label>
+            Color
+            <input type="color" id="crear-color" value="#8862c9">
+          </label>
+
+          <label>
+            Imagen (URL)
+            <input type="url" id="crear-imagen" required>
+          </label>
+
+          <label>
+            Edad
+            <input type="number" id="crear-edad" min="0" value="0" required>
+          </label>
+
+          <label>
+            Nivel de intensidad (0-100)
+            <input type="number" id="crear-intensidad" min="0" max="100" value="50" required>
+          </label>
+
+          <label class="form-checkbox">
+            <input type="checkbox" id="crear-nueva">
+            Es nueva en Intensamente 2
+          </label>
+
+          <label class="form-checkbox">
+            <input type="checkbox" id="crear-masculino">
+            Es masculino
+          </label>
+
+          <label>
+            Emociones relacionadas (separadas por coma)
+            <input type="text" id="crear-relacionadas" placeholder="Ej: Alegría, Miedo">
+          </label>
+
+          <button type="submit" class="btn-crud">Agregar</button>
+        </form>
+        <p id="crear-mensaje" class="mensaje" hidden></p>
+      </section>
+
+      <section id="vista-buscar" class="vista" hidden>
+        <h1>Buscar</h1>
+        <!-- Se busca mientras se escribe (evento "input" en gestion.js), sin
+             distinguir mayúsculas ni tildes. Los resultados se pintan con la
+             misma tarjeta que "Mostrar todos" (crearItem()). -->
+        <label class="selector-emocion">
+          Nombre de la emoción
+          <input type="search" id="buscar-texto" placeholder="Ej: verguenza" autocomplete="off">
+        </label>
+        <div id="buscar-resultados" class="lista-todos"></div>
+        <p id="buscar-mensaje" class="mensaje" hidden></p>
+      </section>
+
+      <section id="vista-actualizar" class="vista" hidden>
+        <h1>Actualizar</h1>
+        <!-- select-actualizar lo llena llenarSelectActualizar() en gestion.js
+             con el nombre de cada emoción; al elegir una se muestra el form
+             ya lleno con sus datos actuales. -->
+        <label class="selector-emocion">
+          Elige una emoción para editar
+          <select id="actualizar-select"></select>
+        </label>
+
+        <form id="form-actualizar" class="form-crud" hidden>
+          <label>
+            Nombre
+            <input type="text" id="actualizar-nombre" required>
+          </label>
+
+          <label>
+            Color
+            <input type="color" id="actualizar-color">
+          </label>
+
+          <label>
+            Imagen (URL)
+            <input type="url" id="actualizar-imagen" required>
+          </label>
+
+          <label>
+            Edad
+            <input type="number" id="actualizar-edad" min="0" required>
+          </label>
+
+          <label>
+            Nivel de intensidad (0-100)
+            <input type="number" id="actualizar-intensidad" min="0" max="100" required>
+          </label>
+
+          <label class="form-checkbox">
+            <input type="checkbox" id="actualizar-nueva">
+            Es nueva en Intensamente 2
+          </label>
+
+          <label class="form-checkbox">
+            <input type="checkbox" id="actualizar-masculino">
+            Es masculino
+          </label>
+
+          <label>
+            Emociones relacionadas (separadas por coma)
+            <input type="text" id="actualizar-relacionadas" placeholder="Ej: Alegría, Miedo">
+          </label>
+
+          <button type="submit" class="btn-crud">Guardar cambios</button>
+        </form>
+        <p id="actualizar-mensaje" class="mensaje" hidden></p>
+      </section>
+
+      <section id="vista-eliminar" class="vista" hidden>
+        <h1>Eliminar</h1>
+        <!-- eliminar-select lo llena llenarSelectEliminar() en gestion.js; el
+             value de cada <option> es el id de la emoción (no su posición). -->
+        <label class="selector-emocion">
+          Elige una emoción para eliminar
+          <select id="eliminar-select"></select>
+        </label>
+        <button type="button" id="eliminar-boton" class="btn-crud btn-peligro">Eliminar</button>
+        <p id="eliminar-mensaje" class="mensaje" hidden></p>
+      </section>
+
+      <section id="vista-todos" class="vista">
+        <h1>Todos los elementos</h1>
+        <div id="lista-todos" class="lista-todos"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- El orden importa: cada archivo usa algo del anterior.
+       data.js ("emociones") → credenciales.js ("usuario"/"password") →
+       login.js (validarLogin, usa credenciales.js) → gestion.js (usa todo). -->
+  <script src="data.js"></script>
+  <script src="credenciales.js"></script>
+  <script src="login.js"></script>
+  <script src="gestion.js"></script>
+</body>
+</html>

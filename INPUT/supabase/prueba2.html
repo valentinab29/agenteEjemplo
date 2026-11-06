@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi tienda — Supabase</title>
+  <!-- CDN: trae la librería de Supabase ANTES que nuestros propios
+       scripts — sin esta línea, "supabase.createClient" no existiría
+       todavía cuando supabaseClient.js intente usarlo -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- tema.js va en el <head> (y no al final) para poner el tema ANTES
+       de que se pinte la página: si cargara al final, el modo oscuro
+       se vería un instante en claro y luego "parpadearía" a oscuro -->
+  <script src="js/tema.js"></script>
+  <style>
+    /* Variables (custom properties): cambias el color aquí y cambia
+       en toda la página */
+    :root {
+      --violet-900: #1e1033;
+      --violet-700: #4c1d95;
+      --violet-500: #7c3aed;
+      --violet-300: #c4b5fd;
+      --violet-100: #ede9fe;
+      --radius: 16px;
+
+      /* Tokens de TEMA: el CSS de abajo usa SOLO estos nombres, nunca
+         un color fijo. Así el modo oscuro solo tiene que cambiar sus
+         valores (ver los dos bloques siguientes) */
+      color-scheme: light;   /* pinta en claro los controles nativos y el scroll */
+      --card: #ffffff;
+      --text: #2e1065;
+      --heading-from: var(--violet-700);
+      --heading-to: var(--violet-500);
+      --label: var(--violet-700);
+      --input-bg: #faf5ff;
+      --border: var(--violet-100);
+      --pill-bg: var(--violet-100);
+      --pill-text: var(--violet-700);
+      --btn-alt: var(--violet-100);
+      --btn-alt-text: var(--violet-700);
+      --header-bg: rgba(255, 255, 255, 0.75);
+      --img-bg: var(--violet-100);
+      --ok: #15803d;
+      --no: #be123c;
+      --bg-glow: rgba(196, 181, 253, 0.6);
+      --bg-1: var(--violet-100);
+      --bg-2: #f5f3ff;
+      --bg-3: #e9d5ff;
+      --shadow: 0 10px 30px rgba(76, 29, 149, 0.18);
+    }
+
+    /* Modo oscuro, se escribe DOS veces:
+       1) @media: si el sistema está en oscuro y el usuario NO eligió
+          claro con el botón (:not([data-theme="light"]))
+       2) [data-theme="dark"]: si el usuario eligió oscuro con el botón,
+          aunque el sistema esté en claro */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --card: #241640;
+        --text: #ede9fe;
+        --heading-from: var(--violet-300);
+        --heading-to: #e9d5ff;
+        --label: var(--violet-300);
+        --input-bg: #1a0f2e;
+        --border: #3b2a5c;
+        --pill-bg: #3b2a5c;
+        --pill-text: #e9d5ff;
+        --btn-alt: #3b2a5c;
+        --btn-alt-text: #ede9fe;
+        --header-bg: rgba(36, 22, 64, 0.8);
+        --img-bg: #3b2a5c;
+        --ok: #4ade80;
+        --no: #fb7185;
+        --bg-glow: rgba(124, 58, 237, 0.35);
+        --bg-1: #120a20;
+        --bg-2: #1a0f2e;
+        --bg-3: #221338;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --card: #241640;
+      --text: #ede9fe;
+      --heading-from: var(--violet-300);
+      --heading-to: #e9d5ff;
+      --label: var(--violet-300);
+      --input-bg: #1a0f2e;
+      --border: #3b2a5c;
+      --pill-bg: #3b2a5c;
+      --pill-text: #e9d5ff;
+      --btn-alt: #3b2a5c;
+      --btn-alt-text: #ede9fe;
+      --header-bg: rgba(36, 22, 64, 0.8);
+      --img-bg: #3b2a5c;
+      --ok: #4ade80;
+      --no: #fb7185;
+      --bg-glow: rgba(124, 58, 237, 0.35);
+      --bg-1: #120a20;
+      --bg-2: #1a0f2e;
+      --bg-3: #221338;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0 1rem 4rem;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--text);
+      /* dos degradados encimados: un brillo arriba + el fondo morado.
+         background-attachment: fixed = el fondo no se mueve con el scroll */
+      background:
+        radial-gradient(circle at 20% 0%, var(--bg-glow), transparent 45%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2) 60%, var(--bg-3));
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* todo el contenido vive en un ancho máximo, centrado */
+    .contenedor { max-width: 1100px; margin-inline: auto; }
+
+    /* ---------- Botones ---------- */
+    button {
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, var(--violet-500), var(--violet-700));
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(124, 58, 237, 0.45); }
+    button:active { transform: translateY(0); }
+    /* :focus-visible solo se ve al navegar con teclado, no con el mouse */
+    button:focus-visible { outline: 3px solid var(--violet-300); outline-offset: 3px; }
+    /* mientras se guarda, el botón queda apagado (ver prueba2.js) */
+    button:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+    /* botón "secundario": mismo tamaño, sin degradado */
+    button.secundario { background: var(--btn-alt); color: var(--btn-alt-text); box-shadow: none; }
+    /* rojo = acción que no se puede deshacer; se ve distinto a propósito */
+    button.peligro {
+      background: linear-gradient(135deg, #e11d48, #9f1239);
+      box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35);
+    }
+    /* botón redondo de solo ícono (tema, editar, eliminar) */
+    button.icono {
+      width: 2.6rem;
+      height: 2.6rem;
+      padding: 0;
+      display: grid;
+      place-items: center;   /* centra el ícono en las dos direcciones */
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Barra de arriba ---------- */
+    /* sticky = se queda pegada arriba al hacer scroll, pero (a diferencia
+       de fixed) sí ocupa su espacio y no tapa el contenido de abajo */
+    .barra {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 -1rem 1.5rem;
+      padding: 0.9rem 1rem;
+      background: var(--header-bg);
+      /* backdrop-filter desenfoca lo que pasa POR DEBAJO de la barra */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .barra .contenedor { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+    h1 {
+      margin: 0 auto 0 0;   /* margin-right: auto empuja lo demás a la derecha */
+      font-size: 1.5rem;
+      /* texto con degradado: el fondo se "recorta" a la forma de las letras */
+      background: linear-gradient(90deg, var(--heading-from), var(--heading-to));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    #form-buscar { display: flex; gap: 0.5rem; flex: 1 1 260px; max-width: 420px; }
+    #form-buscar input {
+      flex: 1;              /* el cajón crece y el botón queda a su tamaño */
+      min-width: 0;
+      font: inherit;
+      color: var(--text);
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 0.55rem 1.1rem;
+    }
+    #form-buscar input:focus {
+      outline: none;
+      border-color: var(--violet-500);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    }
+
+    /* "3 resultados para silla · Ver todos" */
+    #estado-busqueda {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin: 0 0 1rem;
+    }
+    #estado-busqueda button { padding: 0.4rem 1rem; font-size: 0.85rem; }
+    /* OJO: el atributo hidden funciona con display: none, y la regla de
+       arriba (display: flex) le ganaría. Esto lo vuelve a esconder */
+    [hidden] { display: none !important; }
+
+    /* ---------- Grid de tarjetas ---------- */
+    /* auto-fill + minmax: "mete tantas columnas de mínimo 230px como
+       quepan". En el celular sale 1, en el PC 3 o 4 — sin @media */
+    #lista-productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .tarjeta {
+      min-width: 0;   /* deja que la tarjeta se encoja más que su contenido */
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;   /* recorta la imagen a las esquinas redondas */
+      transition: transform 0.2s;
+    }
+    .tarjeta:hover { transform: translateY(-4px); }
+
+    /* aspect-ratio: la caja de la imagen siempre es 4:3, venga la foto
+       del tamaño que venga; object-fit: cover la recorta sin deformarla */
+    .tarjeta-img {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: var(--img-bg);
+      display: grid;
+      place-items: center;
+    }
+    /* absolute + inset: 0 = la imagen llena la caja SIN poder agrandarla.
+       Sin esto, una foto de 1600px empuja la caja a su tamaño real, rompe
+       el 4:3 y en el celular hace que la página se salga de lado */
+    .tarjeta-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* sin imagen: la inicial del nombre, grande */
+    .tarjeta-img .inicial { font-size: 3rem; font-weight: 700; color: var(--pill-text); }
+
+    /* position: absolute se ubica respecto al padre con position: relative */
+    .badge {
+      position: absolute;
+      top: 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+    .badge.id { left: 0.6rem; background: rgba(30, 16, 51, 0.7); color: #fff; }
+    .badge.descuento { right: 0.6rem; background: #e11d48; color: #fff; }
+
+    .tarjeta-cuerpo { padding: 1rem 1.1rem 0.5rem; flex: 1; }
+    .tarjeta h3 { margin: 0 0 0.25rem; font-size: 1.05rem; line-height: 1.3; }
+    /* line-clamp corta la descripción en 2 líneas con "…" */
+    .tarjeta .descripcion {
+      margin: 0 0 0.6rem;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .chips { list-style: none; margin: 0 0 0.6rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .chips li {
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+
+    .precio { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+    .precio strong { font-size: 1.25rem; }
+    .precio s { font-size: 0.85rem; opacity: 0.6; }
+
+    .stock { margin: 0.35rem 0 0; font-size: 0.8rem; }
+    .stock.si { color: var(--ok); }
+    .stock.no { color: var(--no); }
+
+    /* ---------- Papelera ---------- */
+    #barra-papelera {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 0 0 1.25rem;
+      padding: 1rem 1.25rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      border-left: 5px solid #e11d48;
+      box-shadow: var(--shadow);
+    }
+    #barra-papelera h2 { margin: 0; font-size: 1.2rem; }
+    #barra-papelera p { margin: 0.2rem 0 0; font-size: 0.85rem; opacity: 0.8; }
+    /* en la papelera la foto se ve en gris: grayscale() le quita el color */
+    .tarjeta.en-papelera .tarjeta-img { filter: grayscale(1); opacity: 0.7; }
+    .tarjeta .fecha-eliminado { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--no); }
+
+    .tarjeta-acciones { display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.5rem 1rem 1rem; }
+
+    /* mensaje cuando no hay tarjetas que mostrar ("Cargando…", "No hay…") */
+    .vacio {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      opacity: 0.85;
+    }
+
+    /* ---------- Datos crudos (práctica de map / filter) ---------- */
+    /* <details> + <summary> = bloque plegable que funciona sin JS */
+    #datos-crudos {
+      margin-top: 2.5rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem 1.25rem;
+    }
+    #datos-crudos summary { cursor: pointer; font-weight: 600; color: var(--label); }
+    #datos-crudos h3 { font-size: 0.95rem; margin: 1.25rem 0 0.5rem; }
+    #datos-crudos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    #datos-crudos li {
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+    /* pre-wrap respeta los saltos de línea del JSON pero deja que las
+       líneas largas bajen en vez de salirse */
+    #resultado {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.8rem;
+      max-height: 320px;
+      overflow-y: auto;
+      background: var(--input-bg);
+      border-radius: 10px;
+      padding: 0.75rem;
+    }
+
+    /* ---------- Ventana flotante (modal) ---------- */
+    /* <dialog> es un elemento nativo: con showModal() se pone encima de
+       todo, bloquea lo de atrás y se cierra con Escape — sin librerías */
+    #modal-producto {
+      width: min(560px, 100% - 2rem);
+      max-height: calc(100% - 2rem);
+      padding: 0;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+    /* ::backdrop = la capa oscura detrás del modal */
+    #modal-producto::backdrop {
+      background: rgba(30, 16, 51, 0.55);
+      backdrop-filter: blur(3px);
+    }
+    #modal-titulo { margin: 0 0 1rem; font-size: 1.3rem; grid-column: 1 / -1; }
+
+    /* ---------- Formulario ---------- */
+    .form-crud {
+      padding: 1.5rem;
+      /* grid de 2 columnas que pasa a 1 en el celular (ver @media abajo) */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 1.25rem;
+    }
+    .form-crud p { margin: 0 0 1rem; }
+    /* .ancho marca los campos que ocupan las 2 columnas */
+    .form-crud .ancho { grid-column: 1 / -1; }
+
+    .form-crud label { font-weight: 600; font-size: 0.9rem; color: var(--label); }
+
+    .form-crud input[type="text"],
+    .form-crud input[type="number"],
+    .form-crud input[type="url"],
+    .form-crud textarea {
+      width: 100%;
+      margin-top: 0.35rem;
+      font: inherit;
+      font-weight: 400;
+      color: var(--text);
+      background: var(--input-bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-crud textarea { resize: vertical; }
+    .form-crud input:focus,
+    .form-crud textarea:focus {
+      outline: none;
+      border-color: var(--violet-500);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    }
+    /* accent-color pinta el checkbox nativo sin tener que rehacerlo */
+    .form-crud input[type="checkbox"] {
+      accent-color: var(--violet-500);
+      width: 1.1rem;
+      height: 1.1rem;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+    .form-crud .check { align-self: end; }
+    .form-crud .acciones { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
+
+    /* ---------- Aviso flotante ("toast") ---------- */
+    /* aparece abajo al centro unos segundos tras crear/editar/eliminar */
+    #aviso {
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      transform: translateX(-50%);
+      z-index: 20;
+      max-width: calc(100% - 2rem);
+      margin: 0;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      background: var(--violet-900);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    #aviso.error { background: #9f1239; }
+
+    /* En pantallas angostas (celular) */
+    @media (max-width: 560px) {
+      .form-crud { grid-template-columns: 1fr; }
+      /* el buscador baja a su propia fila, a todo el ancho */
+      #form-buscar { order: 3; flex-basis: 100%; max-width: none; }
+      .form-crud .acciones button { flex: 1; }
+    }
+
+    /* Si la persona pidió "menos movimiento" en su sistema, se respeta */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="barra">
+    <div class="contenedor">
+      <!-- 🏠 = volver al inicio: tienda, sin búsqueda, arriba del todo -->
+      <button id="btn-inicio" type="button" class="icono secundario" aria-label="Ir al inicio">🏠</button>
+      <h1>Mi tienda</h1>
+
+      <!-- Un número busca por id (buscarProductoPorId); texto busca por
+           nombre (buscarProductosPorNombre). Es un <form> para que Enter
+           también funcione. role="search" le avisa al lector de pantalla -->
+      <form id="form-buscar" role="search">
+        <input type="search" name="busqueda" placeholder="Buscar por id o nombre" aria-label="Buscar producto">
+        <button type="submit" class="icono" aria-label="Buscar">🔍</button>
+      </form>
+
+      <button id="btn-nuevo" type="button">+ Nuevo</button>
+      <!-- cambia entre la tienda y la papelera; prueba2.js le pone el
+           texto ("🗑 Papelera (3)" o "← Tienda") -->
+      <button id="btn-papelera" type="button" class="secundario">🗑 Papelera</button>
+      <!-- tema.js le pone el ícono y el aria-label según el tema actual -->
+      <button id="btn-tema" type="button" class="icono secundario" aria-label="Cambiar tema">🌙</button>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <!-- solo se ve en la vista de papelera -->
+    <div id="barra-papelera" hidden>
+      <div>
+        <h2>Papelera</h2>
+        <p>Lo que eliminas queda aquí. ♻️ lo devuelve a la tienda; ❌ lo borra para siempre.</p>
+      </div>
+      <button id="btn-vaciar" type="button" class="peligro">Vaciar papelera</button>
+    </div>
+
+    <!-- solo se ve mientras hay una búsqueda activa (atributo hidden) -->
+    <div id="estado-busqueda" hidden>
+      <span id="texto-busqueda"></span>
+      <button id="btn-ver-todos" type="button" class="secundario">Ver todos</button>
+    </div>
+
+    <!-- prueba2.js llena esto con una <article class="tarjeta"> por producto.
+         aria-live="polite": el lector de pantalla avisa cuando cambia -->
+    <section id="lista-productos" aria-live="polite">
+      <p class="vacio">Cargando productos…</p>
+    </section>
+
+    <!-- Lo que antes eran 4 bloques sueltos (JSON, nombres, disponibles,
+         precios): siguen aquí para practicar map/filter, pero plegados -->
+    <details id="datos-crudos">
+      <summary>Ver datos crudos (práctica de map y filter)</summary>
+      <h3>Nombres — <code>data.map(p =&gt; p.nombre)</code></h3>
+      <div id="resultado2"></div>
+      <h3>Disponibles — <code>data.filter(p =&gt; p.disponible)</code></h3>
+      <div id="resultado3"></div>
+      <h3>Precios — <code>data.map(p =&gt; p.precio)</code></h3>
+      <div id="resultado4"></div>
+      <h3>JSON completo — <code>JSON.stringify(data, null, 2)</code></h3>
+      <pre id="resultado"></pre>
+    </details>
+  </main>
+
+  <!-- UN solo formulario para crear Y editar: prueba2.js cambia el título
+       y el texto del botón, y lo llena con el producto cuando es editar.
+       Cada "name" se llama IGUAL que la columna en Supabase -->
+  <dialog id="modal-producto" aria-labelledby="modal-titulo">
+    <form id="form-producto" class="form-crud">
+      <h2 id="modal-titulo">Nuevo producto</h2>
+      <p class="ancho">
+        <label>Nombre<br>
+          <input type="text" name="nombre" required>
+        </label>
+      </p>
+      <p class="ancho">
+        <label>Descripción<br>
+          <textarea name="description" rows="3"></textarea>
+        </label>
+      </p>
+      <p>
+        <label>Precio<br>
+          <input type="number" name="precio" min="0" step="1" required>
+        </label>
+      </p>
+      <p>
+        <label>Unidades<br>
+          <input type="number" name="unidades" min="0" step="1" value="0" required>
+        </label>
+      </p>
+      <p>
+        <label>Descuento (%)<br>
+          <input type="number" name="descuento" min="0" max="100" step="1" value="0">
+        </label>
+      </p>
+      <p class="check">
+        <label>
+          <input type="checkbox" name="disponible" checked> Disponible
+        </label>
+      </p>
+      <p class="ancho">
+        <label>Categorías (separadas por coma)<br>
+          <input type="text" name="categorias" placeholder="tecnología, audio">
+        </label>
+      </p>
+      <p class="ancho">
+        <label>URL de imagen<br>
+          <input type="url" name="image" placeholder="https://...">
+        </label>
+      </p>
+      <div class="acciones">
+        <button type="button" id="btn-cancelar" class="secundario">Cancelar</button>
+        <button type="submit" id="btn-guardar">Crear producto</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- role="status": el lector de pantalla lee el aviso cuando aparece -->
+  <p id="aviso" role="status" hidden></p>
+
+  <!-- supabaseClient.js crea "db": el cliente ya conectado a tu proyecto
+       de Supabase. prueba2.js lo usa, por eso tiene que cargarse ANTES -->
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/prueba2.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://172.18.30.94:8080/prueba.html)",
+      "Bash(curl -s https://tnhepukgifhrhtxszkif.supabase.co/rest/v1/productos_practica?select=* -H 'apikey: __TRACKED_VAR__' -H 'Authorization: Bearer __TRACKED_VAR__')",
+      "WebSearch",
+      "Bash(curl -sL -A \"Mozilla/5.0\" -o /dev/null -w \"%{http_code} %{size_download}\\\\n\" \"https://unsplash.com/s/photos/gaming-chair\")",
+      "Bash(curl -s \"https://unsplash.com/napi/search/photos?query=gaming%20chair&per_page=5\" -A \"Mozilla/5.0\")",
+      "Bash(curl -s https://tnhepukgifhrhtxszkif.supabase.co/rest/v1/productos_practica?select=id,nombre,descuento,image -H 'apikey: __TRACKED_VAR__' -H 'Authorization: Bearer __TRACKED_VAR__')",
+      "Bash(node --check \"d:/LENGUAJES UEB/CUARTO SEMESTRE/agenteEjemplo/INPUT/supabase/js/prueba2.js\")",
+      "Bash(node --check \"D:/LENGUAJES UEB/CUARTO SEMESTRE/agenteEjemplo/INPUT/supabase/js/prueba2.js\")",
+      "PowerShell(cd \"d:\\\\LENGUAJES UEB\\\\CUARTO SEMESTRE\\\\agenteEjemplo\\\\INPUT\\\\supabase\"; node --check js/prueba2.js; if \\($?\\) { node --check js/tema.js }; if \\($?\\) { \"OK\" }; Select-String -Path prueba2.html -Pattern 'form-producto|violet-100\\\\\\)|#faf5ff' | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "PowerShell(node --check js/prueba2.js; if \\($?\\) { \"OK\" }; Select-String -Path prueba2.html -Pattern 'name=\"producto\"|Nombre nuevo|id_producto' | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "PowerShell(node --check js/prueba2.js)",
+      "PowerShell($dst = \"C:\\\\Users\\\\AULAIN~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--LENGUAJES-UEB-CUARTO-SEMESTRE-agenteEjemplo\\\\95a47326-b276-4f06-afc9-d874948495e9\\\\scratchpad\\\\respaldo_2026-10-29\"; New-Item -ItemType Directory -Force $dst | Out-Null; Copy-Item prueba2.html, js\\\\prueba2.js $dst; \\(Resolve-Path $dst\\).Path; Get-ChildItem $dst | Select-Object Name, Length)",
+      "PowerShell(node --check js/prueba2.js; if \\($?\\) { \"OK js\" }; $edge = @\\(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\"\\) | Where-Object { Test-Path $_ } | Select-Object -First 1; $edge)",
+      "PowerShell($k = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuaGVwdWtnaWZocmh0eHN6a2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwODEyMzQsImV4cCI6MjEwNzY1NzIzNH0.81KZtOjYQYCFzprzmwI6mpbmr1vAssg4J3RFN77Wg80\"; try { $r = Invoke-WebRequest -UseBasicParsing -Headers @{ apikey = $k; Authorization = \"Bearer $k\" } \"https://tnhepukgifhrhtxszkif.supabase.co/rest/v1/productos_practica?select=id,eliminado_en&limit=2\"; $r.StatusCode; $r.Content } catch { $_.Exception.Response.StatusCode.value__; $s = $_.Exception.Response.GetResponseStream\\(\\); \\(New-Object IO.StreamReader $s\\).ReadToEnd\\(\\) })",
+      "PowerShell(node --check js/prueba2.js; if \\($?\\) { \"OK\" }; Select-String -Path js/prueba2.js -Pattern 'cargarTodos|eliminar''' | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "PowerShell($row = '\"2026-10-29\",\"PostgREST 42703: column productos_practica.eliminado_en does not exist\",\"El código consultaba una columna nueva \\(eliminado_en, para la papelera\\) que todavía no existía en la tabla; Postgres rechaza la consulta entera, así que ninguna vista carga.\",\"Se le explicó que el botón 🏠 sí funcionaba y que el aviso salía en todas las vistas por la misma causa; se le mostró por qué la anon key no puede crear columnas \\(DDL\\) y que ese paso se hace en el panel.\",\"alter table productos_practica add column eliminado_en timestamptz;\",\"El estudiante debe crear la columna en el SQL Editor o en el Table Editor de Supabase; la página ya muestra un aviso claro con el código 42703.\"'; Add-Content -Encoding utf8 \"D:\\\\LENGUAJES UEB\\\\CUARTO SEMESTRE\\\\agenteEjemplo\\\\WORK-MEMORY\\\\registro_errores.csv\" $row; \\(Import-Csv \"D:\\\\LENGUAJES UEB\\\\CUARTO SEMESTRE\\\\agenteEjemplo\\\\WORK-MEMORY\\\\registro_errores.csv\" -Encoding utf8 | Where-Object { $_.error -match 'PGRST|42703|column|404' }\\).Count)"
+    ]
+  }
+}

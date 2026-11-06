@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page Responsive — Cachorro / Adolescente / Adulto</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #262626;
+      color: #ffffff;
+    }
+
+    section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .titulo h1 {
+      font-size: 2rem;
+      margin: 0;
+      color:aqua;
+    }
+
+     .titulo h2 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+     .titulo h3 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .imagen img {
+      max-width: 100%;
+      width: 400px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .descripcion p {
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="titulo">
+    <h1 id="titulo">Cachorro</h1>
+  </section>
+
+  <section class="imagen">
+    <img id="imagen" src="https://placedog.net/500/300?id=10" alt="Cachorro">
+  </section>
+
+  <section class="descripcion">
+    <p id="descripcion">
+      Los perritosssss</p>
+  </section>
+
+</body>
+<script>
+
+const titulo = document.getElementById("titulo");
+const imagen = document.getElementById("imagen");
+const descripcion = document.getElementById("descripcion");
+
+function resize () {
+  if (window.innerWidth >= 1024) {
+    titulo.textContent = "Oruga";
+    imagen.src = "https://es.wikipedia.org/wiki/Archivo:Oruga_-_Mariposa_Monarca_%28Danaus_plexippus%29.jpg";
+    imagen.alt = "Oruga de mariposa";
+    descripcion.textContent = "El perro adulto ya alcanzó su desarrollo completo. Su energía se estabiliza y requiere una rutina de ejercicio y alimentación acorde a su tamaño y raza.";
+  }
+  else if (window.innerWidth >= 768)
+  {
+    titulo.textContent = "Perro Adolescente";
+    imagen.src = "https://www.purina.es/sites/default/files/styles/ttt_image_510/public/2023-05/When_does_a_puppy_become_a_teenager.jpg?itok=vdN4VwTS";
+    imagen.alt = "Perro adolescente";
+    descripcion.textContent = "El perro adolescente atraviesa una etapa de cambios físicos y de comportamiento. Es el momento clave para reforzar el entrenamiento y establecer buenos hábitos.";
+  }
+  else {
+    titulo.textContent = "Cachorro";
+    imagen.src = "https://www.ringo.com.co/Portals/ringo/Images/Perro%20cachorro%20mordiendo%20botella%20de%20plastico.jpg?ver=rDfP9IXgETy2Ae1bIIes6Q%3D%3D";
+    imagen.alt = "Cachorro";
+    descripcion.textContent = "Los cachorros son perros en su primera etapa de vida, llenos de energía y curiosidad. Necesitan cuidados especiales, vacunas y mucha socialización temprana.";
+  }
+}
+
+window.addEventListener ("resize", resize);
+
+resize ();
+
+</script>
+</html>

@@ -15,7 +15,11 @@ mientras programa, para que aprenda del error en vez de solo corregirlo.
 - Antes de cualquier tarea de varios pasos, muestra el plan en 3–5 viñetas y espera confirmación antes de ejecutar.
 - Cuando haya más de un enfoque válido, dilo: presenta las opciones brevemente y recomienda una con una justificación de una frase.
 - Al explicar un error, prioriza que el estudiante entienda el concepto detrás, no solo la corrección.
-- Al cerrar cada sesión, pregunta qué aprendió o qué le costó de la clase de hoy, y guarda la respuesta en `WORK-MEMORY/bitacora_reflexiones.md` con un encabezado de fecha (`## AAAA-MM-DD`).
+- **Bitácora automática** (sin preguntar ni esperar a que lo pida): en `WORK-MEMORY/bitacora_reflexiones.md`, bajo el encabezado del día (`## AAAA-MM-DD`, créalo si no existe), actualiza al terminar **cada tarea** —no solo al final— estas secciones:
+  - `### Lo que hicimos` — proyecto/archivo, qué se cambió y los conceptos vistos.
+  - `### Preguntas y decisiones` — cada pregunta que le hago al estudiante y lo que respondió (o "pendiente" si no respondió).
+  - `### Errores y dudas` — todo error o comportamiento inesperado que me cuente; además regístralo en `WORK-MEMORY/registro_errores.csv` siguiendo `.claude/skills/explicar-errores/`.
+  - `### Reflexión` — al cerrar cada sesión, pregunta qué aprendió o qué le costó de la clase de hoy y guarda su respuesta aquí.
 
 ## Recursos que debo conocer
 - `INPUT/` — aquí viven `entregas_talleres.md` (fechas y estado de cada entrega), `referencias_proyecto.md` (referencias visuales recolectadas para un proyecto) y `fragmento_codigo_con_error.md` (ejemplo de código con error, para practicar).

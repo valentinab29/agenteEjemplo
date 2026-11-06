@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase CRUD</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Supabase CRUD</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Agregar item</h2>
+      <form id="item-form">
+        <input type="text" id="item-name" placeholder="Nombre" required>
+        <button type="submit">Guardar</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Items</h2>
+      <p id="status"></p>
+      <ul id="item-list"></ul>
+    </section>
+  </main>
+
+  <!-- Script order matters: each file uses what the previous one defines -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseClient.js"></script>  <!-- 2° -->
+  <script src="js/datos.js"></script>           <!-- 3° -->
+  <script src="js/gestion.js"></script>         <!-- 4° -->
+</body>
+</html>

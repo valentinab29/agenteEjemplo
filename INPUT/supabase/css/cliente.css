@@ -1,0 +1,181 @@
+/* Paleta azul: se define una vez aquí y se reusa con var(--nombre) */
+:root {
+  --blue-dark: #0d3b66;
+  --blue: #1d6fb8;
+  --blue-hover: #155a96;
+  --blue-light: #e3f0fb;
+  --blue-border: #b6d4f0;
+  --text: #1a2b3c;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+/* form tiene display: flex, que le gana al hidden del HTML; esto lo obliga a ocultarse */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+  background: var(--blue-light);
+  color: var(--text);
+}
+
+#panel-cuenta {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--white);
+  border-top: 6px solid var(--blue);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(13, 59, 102, 0.15);
+}
+
+h2 { margin-top: 0; color: var(--blue-dark); text-align: center; }
+h3 { margin: 0 0 0.5rem; color: var(--blue); }
+
+#estado-sesion {
+  padding: 0.6rem;
+  background: var(--blue-light);
+  border-left: 4px solid var(--blue);
+  border-radius: 4px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--blue-border);
+  border-radius: 8px;
+}
+
+label { font-size: 0.9rem; font-weight: 600; color: var(--blue-dark); }
+
+input {
+  padding: 0.55rem;
+  border: 1px solid var(--blue-border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29, 111, 184, 0.25);
+}
+
+/* Campo de solo lectura (el correo en "Mis datos"): se ve apagado */
+input[readonly] {
+  background: var(--blue-light);
+  color: #5a6b7c;
+  cursor: not-allowed;
+}
+
+small { color: #5a6b7c; }
+
+button {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover { background: var(--blue-hover); }
+
+#btn-logout {
+  width: 100%;
+  background: var(--white);
+  color: var(--blue);
+  border: 2px solid var(--blue);
+}
+
+#btn-logout:hover { background: var(--blue-light); }
+
+/* ---------- Menú lateral (aside) ---------- */
+
+/* Celular primero: el menú vive fuera de la pantalla, a la izquierda, y
+   translateX(-100%) lo corre todo su ancho hacia afuera. */
+#menu-lateral {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 240px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1rem;
+  background: var(--blue-dark);
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+}
+
+/* Con la clase .abierto (la pone el botón ☰) vuelve a su sitio */
+#menu-lateral.abierto { transform: translateX(0); }
+
+#menu-lateral h3 { color: var(--white); margin-bottom: 1rem; }
+
+#menu-lateral nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1; /* ocupa el espacio libre y empuja "Cerrar sesión" hasta abajo */
+}
+
+.menu-item {
+  margin: 0;
+  text-align: left;
+  background: transparent;
+  color: var(--blue-light);
+}
+
+.menu-item:hover { background: var(--blue-hover); }
+
+/* Ítem de la vista que se está viendo */
+.menu-item.activo {
+  background: var(--blue);
+  color: var(--white);
+  font-weight: 600;
+}
+
+#btn-menu {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 11; /* por encima del menú, para poder cerrarlo */
+  margin: 0;
+}
+
+#vista-inicio {
+  padding: 1rem;
+  border: 1px solid var(--blue-border);
+  border-radius: 8px;
+}
+
+/* Pantallas grandes: el menú queda fijo a la izquierda y el ☰ sobra */
+@media (min-width: 768px) {
+  .layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  #menu-lateral {
+    position: sticky;
+    top: 1rem;
+    height: calc(100vh - 2rem);
+    border-radius: 10px;
+    transform: none;
+  }
+
+  #btn-menu { display: none; }
+
+  main { flex: 1; }
+}

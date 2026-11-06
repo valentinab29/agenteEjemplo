@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objeto 1</title>
+  <!-- Estilos de la carta, el carrusel y el modo oscuro -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Solo cambia el texto y activa/desactiva la clase "dark-mode" del body; el listener está en index.js -->
+  <button id="toggle-modo">🌙 Modo oscuro</button>
+
+  <!-- Título decorativo; el gradiente y el espaciado están en style.css -->
+  <h1 class="titulo-principal">Intensamente 2</h1>
+
+  <!-- Carrusel tipo baraja: flecha izquierda, pila de 3 cartas, flecha derecha.
+       El contenedor solo necesita UN <section>: index.js crea ahí adentro las
+       3 "capas" fijas de la baraja (ver NUM_CAPAS en index.js) -->
+  <div class="carrusel">
+    <!-- Las dos flechas no tienen su propio "onclick" en el HTML: index.js las
+         busca por id y les agrega el listener (btnAnterior / btnSiguiente) -->
+    <button id="btn-anterior" class="flecha" aria-label="Emoción anterior">&#10094;</button>
+
+    <!-- Contenedor vacío a propósito: index.js le agrega las 3 cartas apiladas -->
+    <section class="card-container" id="card-container"></section>
+
+    <button id="btn-siguiente" class="flecha" aria-label="Emoción siguiente">&#10095;</button>
+  </div>
+
+  <!-- Vacío en el HTML: index.js le pone el texto "posición / total" (ej. "3 / 12") -->
+  <p id="contador" class="contador"></p>
+
+  <!-- Va al final del body para que el DOM ya exista cuando el script corre -->
+  <script src="index.js"></script>
+</body>
+</html>

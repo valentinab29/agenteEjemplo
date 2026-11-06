@@ -1,0 +1,128 @@
+<body>
+<input type="text" id="input">
+<button id="button">Enviar</button>
+<button id="button2">Eliminar</button>
+<button id="button3" onclick="eliminarPrimero()">Eliminar Primero</button>
+<button id="button4">Mostrar lista</button>
+<button id="button5">Buscar</button>
+<button id="button6">Eliminar por nombre</button>
+<button id="button7">Cambiar elemento</button>
+
+<p id="resultado"> </p>
+<ul id="lista"></ul>
+
+<script>
+
+let arr = ["manzana","pera","uva","mango",
+"piña","fresa","melon","kiwi",
+"naranja","limon","papaya","banano"];
+
+const input = document.getElementById("input");
+const button = document. getElementById("button");
+const resultado = document.getElementById("resultado");
+const button2 = document.getElementById("button2");
+const button3 = document.getElementById("button3");
+const button4 = document.getElementById("button4");
+const button5 = document.getElementById("button5");
+const button6 = document.getElementById("button6");
+const button7 = document.getElementById("button7");
+
+const lista = document.getElementById("lista");
+
+button.addEventListener("click", function () {
+console.log("input:", input.value.trim().toLowerCase());
+resultado.textContent = "Valor ingresado: " + input.value.trim().toLowerCase();
+//agregar el valor ingresado al arreglo
+//arr.push(input.value.trim().toLowerCase());
+//agregar el valor ingresado al arreglo del inicio
+arr.push(input.value.trim().toLowerCase());
+});
+
+function eliminarUltimo() {
+    if(arr.length > 0) {
+        let eliminado = arr.pop();
+        resultado.textContent = "Elemento eliminado: " + eliminado;
+    } else {
+        resultado.textContent = "El arreglo esta vacio.";
+    }
+}
+
+function eliminarPrimero() {
+    if(arr.length > 0) {
+        let eliminado = arr.shift();
+        resultado.textContent = "Elemento eliminado: " + eliminado;
+        mostrarLista();
+    } else {
+        resultado.textContent = "El arreglo esta vacio.";
+    }
+}
+
+function mostrarLista() {
+    lista.innerHTML = "";
+    arr.forEach(function (item) {
+        let li = document.createElement("li");
+        li.textContent = item;
+        lista.appendChild(li);
+    });
+}
+
+button2.addEventListener("click", eliminarUltimo);
+button4.addEventListener("click", mostrarLista);
+
+function buscarElemento () {
+console.log("afsljdfl");
+    let valorBuscado = input.value.trim().toLowerCase();
+    let indice = arr.indexOf(valorBuscado);
+    if (indice !== -1) {
+        resultado.textContent = "Elemento encontrado en la posicion:" + indice;
+    } else {
+        resultado.textContent = "Elemento no encontrado en el arreglo";
+    }
+}
+
+button5.addEventListener("click", buscarElemento);
+
+function eliminarElemento(){
+    let valorBuscado = input.value.trim().toLowerCase();
+    if (valorBuscado === "") {
+        resultado.textContent = "Por favor, ingrese un valor para eliminar";
+        return;
+    }
+    let indice = arr.indexOf(valorBuscado);
+    if (indice !== -1){
+        resultado.textContent = "Elemento eliminado de la posición:" + indice;
+    arr.splice(indice, 1);
+    } else {
+        resultado.textContent = "Elemento no encontrado en el arreglo";
+    }
+}
+
+button6.addEventListener("click", eliminarElemento);
+
+function cambiarElemento(){
+    let valorBuscado = input.value.trim().toLowerCase();
+    if (valorBuscado === "") {
+        resultado.textContent = "Por favor, ingrese un valor para eliminar";
+        return;
+    }
+
+    let indice = arr.indexOf(valorBuscado);
+    if (indice !== -1){
+        let nuevoValor = prompt("Ingrese el nuevo valor para reemplazar " + valorBuscado);
+        if (nuevoValor !== null && nuevoValor.trim() !== "") {
+            arr[indice] = nuevoValor.trim().toLowerCase();
+            resultado.textContent = "Elemento '" + valorBuscado + "' reemplazado por '" + arr[indice] + "'";
+            mostrarLista();
+        }
+    } else {
+        resultado.textContent = "Elemento no encontrado en el arreglo";
+    }
+}
+
+button7.addEventListener("click", cambiarElemento);
+
+mostrarLista();
+
+
+</script>
+</body>

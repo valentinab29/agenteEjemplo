@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estado 2 — Grid Básico (para completar en clase)</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+
+body.dark-mode {
+  background-color: #333;
+}
+
+    .grid-container {
+      
+      display: grid ;
+
+      grid-template-columns: 100px 2fr 1fr;
+
+       gap:10px;
+      
+      @media (min-width: 500px) {
+      .grid-item {
+        background-color: black; 
+        }
+       }
+      
+       @media (min-width: 700px) {
+      .grid-item {
+        border-radius: 50px;
+        background-color: #9F03FF; 
+        }
+       }
+     
+      background-color: #030C38;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+.dark-mode .grid-item{
+        background-color: #62357e;
+      }
+
+  .dark-mode h1, .dark-mode p{
+    color: aqua;
+  }
+
+    .grid-item {
+      background-color: #9C6056;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+      transition: transform 2s ease;
+    }
+
+    .grid-item:hover {
+      transform: scale(1.2);
+    }
+
+    @media (min-width: 600px) {
+        .grid-item-2 {
+            display: none;
+        }
+    }
+    .grid-item-2 {
+      background-color: #9C6056;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 500px) {
+        .grid-item-3 {
+            display: none;
+        }
+    }
+    .grid-item-3 {
+      background-color: #4C6A92;
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 6px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1 id="titulo"> Primer Grid</h1>
+  <p style="margin: 20px 0;" id="descripcion">Grid con 3 columnas de 200px cada una — completa los TODO del CSS.</p>
+
+  <div class="grid-container">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div id="item8" class="grid-item">8</div>
+    <div id="demo" class="grid-item">9</div>
+  </div>
+
+ 
+
+  <button id="boton">Botón</button>
+  <button id="boton2">Botón</button>
+
+   <div id="caja2" class="grid-container-2">
+    <div class="grid-item-2">A</div>
+    <div class="grid-item-2">B</div>
+    <div class="grid-item-2">C</div>
+  </div>
+
+  <div id="caja3" class="grid-container-3">
+    <div class="grid-item-3">D</div>
+    <div class="grid-item-3">E</div>
+    <div class="grid-item-3">F</div>
+  </div>
+
+  <div id="caja4" class="grid-container-4">
+  <div class="grid-item-4">G</div>
+    <div class="grid-item-4">H</div>
+    <div class="grid-item-4">I</div>
+  </div>
+
+<button id="btn3">Desaparece clase</button>
+
+  <script>
+
+let demoDiv = document.getElementById("demo");
+let btnMsg = document.getElementById("boton");
+btnMsg.addEventListener("click", function () {
+  demoDiv.textContent = "holis";
+});
+
+let btnMsgg = document.getElementById("boton2");
+btnMsgg.addEventListener("click", function () {
+  document.body.classList.toggle("dark-mode");
+  if (document.body.classList.contains("dark-mode")) {
+    btnMsgg.textContent = "Modo Claro";
+  } else {
+    btnMsgg.textContent = "Modo Oscuro";
+  }
+
+
+
+});
+
+let caja3 = document.getElementById("caja3");
+function actualizarCaja3() {
+  if (window.innerWidth >= 600) {
+    caja3.style.display = "none";
+  } else {
+    caja3.style.display = "grid";
+  }
+}
+actualizarCaja3();
+window.addEventListener("resize", actualizarCaja3);
+
+const gc4 = document.querySelector('.grid-container-4')
+const btn1 = document.getElementById("btn1");
+const btn2 = document.getElementById("btn2");
+const btn3 = document.getElementById("btn3");
+
+btn3.addEventListener("click", function(){
+  alert("hola mundo 3") ;
+  gc4.style.display = "none" ; });
+
+const titulo = document.getElementById("titulo");
+const descripcion = document.getElementById("descripcion");
+
+  function resize (){
+    if (window.innerWidth >= 1024) {
+        titulo.textContent = "modo Desktop";
+        descripcion.textContent = "Hola! Estas en el modo Desktop"
+}
+    else if (window.innerWidth >= 768) 
+    {
+        titulo.textContent = "modo tablet";
+        descripcion.textContent = "Hola! Estas en el modo tablet"
+}
+    else {
+        titulo.textContent = "modo telefono";
+        descripcion.textContent = "Hola! Estas en el modo telefono"
+    }
+}
+
+window.addEventListener('resize' , resize);
+
+resize();
+
+
+  </script>
+</body>
+</html>

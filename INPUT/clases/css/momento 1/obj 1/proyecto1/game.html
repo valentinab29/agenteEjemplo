@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego</title>
+  <!-- Reutiliza los estilos del login de gestion.html (.login, .login-tarjeta,
+       .form-crud, .btn-crud, .mensaje) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-game">
+
+  <!-- Formulario de ingreso: es lo único visible al abrir la página. game.js
+       valida la contraseña con una expresión regular; solo si cumple se
+       oculta esta sección y se muestra #juego. -->
+  <section id="ingreso" class="login">
+    <div class="login-tarjeta">
+      <h1>Ingresar al juego</h1>
+      <!-- novalidate: desactiva los globos de error del navegador para que
+           TODA la validación (y sus mensajes) la haga game.js. -->
+      <form id="form-ingreso" class="form-crud" novalidate>
+        <label>
+          Nombre
+          <input type="text" id="ingreso-nombre" autocomplete="name">
+        </label>
+
+        <label>
+          Alias
+          <input type="text" id="ingreso-alias" autocomplete="nickname">
+        </label>
+
+        <!-- type="email" no valida nada aquí (el form tiene novalidate), pero
+             en el celular abre el teclado con @ y .com a mano. -->
+        <label>
+          Email
+          <input type="email" id="ingreso-email" autocomplete="email" placeholder="ej. riley@correo.com">
+        </label>
+
+        <label>
+          Contraseña
+          <input type="password" id="ingreso-password" autocomplete="new-password">
+          <small class="ayuda-campo">Mínimo 6 caracteres, con un número, una mayúscula y un carácter especial (ej. ! @ # $).</small>
+        </label>
+
+        <button type="submit" class="btn-crud">Continuar</button>
+      </form>
+      <p id="ingreso-mensaje" class="mensaje mensaje-error" hidden></p>
+    </div>
+  </section>
+
+  <!-- Juego de memoria. Empieza oculto: solo se muestra si el formulario de
+       ingreso pasa la validación (game.js llama a iniciarMemoria()). -->
+  <section id="juego" class="juego" hidden>
+    <h1 class="titulo-principal">Memoria</h1>
+    <!-- game.js escribe aquí "Hola, <alias>" -->
+    <p id="juego-saludo" class="juego-saludo"></p>
+
+    <!-- HUD: tiempo, intentos y pares encontrados; memoria.js los actualiza -->
+    <div class="hud">
+      <div class="hud-item">
+        <span id="hud-tiempo" class="hud-valor">00:00</span>
+        <span class="hud-label">Tiempo</span>
+      </div>
+      <div class="hud-item">
+        <span id="hud-intentos" class="hud-valor">0</span>
+        <span class="hud-label">Intentos</span>
+      </div>
+      <div class="hud-item">
+        <span id="hud-pares" class="hud-valor">0/0</span>
+        <span class="hud-label">Pares</span>
+      </div>
+      <button type="button" id="btn-reiniciar" class="filtro-boton">↺ Reiniciar</button>
+    </div>
+
+    <!-- Vacío a propósito: memoria.js crea aquí 2 cartas por cada emoción -->
+    <div id="tablero" class="tablero"></div>
+    <p id="tablero-mensaje" class="mensaje" hidden></p>
+  </section>
+
+  <!-- Ventana de victoria: memoria.js le quita "hidden" al encontrar todos
+       los pares. -->
+  <div id="overlay-victoria" class="overlay-victoria" hidden>
+    <div class="modal-victoria" role="dialog" aria-labelledby="victoria-titulo">
+      <div class="victoria-icono">🧠</div>
+      <h2 id="victoria-titulo">¡Lo lograste!</h2>
+      <p id="victoria-texto" class="victoria-texto"></p>
+      <div class="stats-victoria">
+        <div class="hud-item">
+          <span id="stat-tiempo" class="hud-valor">00:00</span>
+          <span class="hud-label">Tiempo</span>
+        </div>
+        <div class="hud-item">
+          <span id="stat-intentos" class="hud-valor">0</span>
+          <span class="hud-label">Intentos</span>
+        </div>
+        <div class="hud-item">
+          <span id="stat-pares" class="hud-valor">0</span>
+          <span class="hud-label">Pares</span>
+        </div>
+      </div>
+      <button type="button" id="btn-jugar-de-nuevo" class="btn-crud">Jugar de nuevo</button>
+    </div>
+  </div>
+
+  <!-- El orden importa: memoria.js usa "emociones" (data.js), y game.js
+       llama a iniciarMemoria() (memoria.js) al entrar al juego. -->
+  <script src="data.js"></script>
+  <script src="memoria.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

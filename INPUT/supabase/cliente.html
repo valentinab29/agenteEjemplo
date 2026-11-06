@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi cuenta</title>
+<link rel="stylesheet" href="css/cliente.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<!-- Botón que abre el menú en celular; en pantallas grandes el CSS lo oculta -->
+<button id="btn-menu" type="button" hidden>☰ Menú</button>
+<div class="layout">
+<aside id="menu-lateral" hidden>
+<h3>Mi cuenta</h3>
+<nav>
+<button class="menu-item" type="button" data-vista="inicio">🏠 Inicio</button>
+<button class="menu-item" type="button" data-vista="configuracion">⚙️ Cambiar mis datos</button>
+</nav>
+<button id="btn-logout" type="button">Cerrar sesión</button>
+</aside>
+<main>
+<section id="panel-cuenta">
+<h2>Mi cuenta</h2>
+<p id="estado-sesion">No has iniciado sesión.</p>
+<form id="form-registro">
+<h3>Registrarme</h3>
+<label for="registro-nombre">Nombre</label>
+<input id="registro-nombre" type="text" required />
+<label for="registro-correo">Correo</label>
+<input id="registro-correo" type="email" required />
+<label for="registro-password">Contraseña</label>
+<input id="registro-password" type="password" minlength="6" required />
+<button type="submit">Crear cuenta</button>
+</form>
+<form id="form-login">
+<h3>Iniciar sesión</h3>
+<label for="login-correo">Correo</label>
+<input id="login-correo" type="email" required />
+<label for="login-password">Contraseña</label>
+<input id="login-password" type="password" required />
+<button type="submit">Iniciar sesión</button>
+</form>
+<div id="vista-inicio" hidden>
+<h3>Inicio</h3>
+<p>Para cambiar tu nombre, teléfono o dirección, usa <strong>⚙️ Cambiar mis datos</strong> en el menú.</p>
+</div>
+<form id="form-datos" hidden>
+<h3>Configuración de usuario</h3>
+<label for="datos-nombre">Nombre</label>
+<input id="datos-nombre" type="text" required />
+<label for="datos-telefono">Teléfono</label>
+<input id="datos-telefono" type="tel" />
+<label for="datos-direccion">Dirección</label>
+<input id="datos-direccion" type="text" />
+<label for="datos-correo">Correo</label>
+<input id="datos-correo" type="email" readonly />
+<small>El correo es el de tu inicio de sesión; no se puede cambiar aquí.</small>
+<button type="submit">Guardar cambios</button>
+</form>
+</section>
+</main>
+</div>
+<script src="js/supabaseClient.js"></script>
+<script src="js/cliente.js"></script>
+</body>
+</html>

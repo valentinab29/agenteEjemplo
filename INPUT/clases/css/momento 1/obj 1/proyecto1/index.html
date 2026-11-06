@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objeto 1</title>
+  <!-- Estilos de la carta, el carrusel y el modo oscuro -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Solo cambia el texto y activa/desactiva la clase "dark-mode" del body; el listener está en index.js -->
+  <button id="toggle-modo">🌙 Modo oscuro</button>
+
+  <!-- Título decorativo; el gradiente y el espaciado están en style.css -->
+  <h1 class="titulo-principal">Intensamente 2</h1>
+
+  <!-- Filtros de la baraja: index.js crea aquí adentro un botón "Todas" + uno
+       por cada uno de los 2 nombres que más se repiten en emocionesRelacionadas
+       (crearBotonesFiltro).
+       Al elegir uno, la baraja muestra solo las emociones relacionadas con él. -->
+  <section class="filtros" aria-label="Filtrar por emoción relacionada">
+    <p class="filtros-titulo">Filtrar por emoción relacionada</p>
+    <div id="filtros-botones" class="filtros-botones"></div>
+  </section>
+
+  <!-- Slider vertical flotante (position: fixed en style.css): deja en la
+       baraja solo las emociones cuya nivelIntensidad está a ±10 del valor
+       elegido (ver RANGO_INTENSIDAD en index.js), con la más cercana adelante.
+       index.js escucha su evento "input" (se dispara en cada movimiento) y
+       escribe el rango actual dentro del <output>. Empieza sin filtro
+       ("Todas"); el botón "Quitar" vuelve a ese estado. -->
+  <aside class="filtro-intensidad" aria-label="Filtrar por nivel de intensidad">
+    <label for="slider-intensidad" class="filtro-intensidad-titulo">Intensidad</label>
+    <output id="valor-intensidad" for="slider-intensidad" class="filtro-intensidad-valor">Todas</output>
+    <input type="range" id="slider-intensidad" class="slider-intensidad" min="0" max="100" step="1" value="50">
+    <button type="button" id="quitar-intensidad" class="quitar-intensidad" hidden>Quitar</button>
+  </aside>
+
+  <!-- Carrusel tipo baraja: flecha izquierda, pila de 3 cartas, flecha derecha.
+       El contenedor solo necesita UN <section>: index.js crea ahí adentro las
+       3 "capas" fijas de la baraja (ver NUM_CAPAS en index.js) -->
+  <div class="carrusel">
+    <!-- Las dos flechas no tienen su propio "onclick" en el HTML: index.js las
+         busca por id y les agrega el listener (btnAnterior / btnSiguiente) -->
+    <button id="btn-anterior" class="flecha" aria-label="Emoción anterior">&#10094;</button>
+
+    <!-- index.js le agrega las 3 cartas apiladas. Solo trae el mensaje de
+         "sin resultados", que index.js muestra si los filtros no dejan
+         ninguna emoción -->
+    <section class="card-container" id="card-container">
+      <p id="sin-resultados" class="sin-resultados" hidden>Ninguna emoción cumple estos filtros.</p>
+    </section>
+
+    <button id="btn-siguiente" class="flecha" aria-label="Emoción siguiente">&#10095;</button>
+  </div>
+
+  <!-- Vacío en el HTML: index.js le pone el texto "posición / total" (ej. "3 / 12") -->
+  <p id="contador" class="contador"></p>
+
+  <!-- data.js debe ir ANTES que index.js: index.js usa el arreglo "emociones"
+       que se declara en data.js -->
+  <script src="data.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

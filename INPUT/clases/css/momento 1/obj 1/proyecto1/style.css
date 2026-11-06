@@ -1,0 +1,934 @@
+/* Columna centrada de arriba a abajo (botón, título, carrusel, contador).
+   El "gap" es lo que separa cada uno de esos bloques entre sí. El fondo
+   en degradado (radial-gradient) es el look de "modo claro"; se reemplaza
+   completo más abajo en body.dark-mode. */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  font-family: 'Poppins', sans-serif;
+  padding: 48px 0 70px;
+  background: radial-gradient(circle at 50% 15%, #f5f1ff 0%, #e7ddfb 45%, #c9b8f0 100%);
+  color: #2a1b4d;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* gestion.html usa un layout de sidebar + contenido en vez de la columna
+   centrada de arriba: esta clase en el <body> anula display/gap/padding
+   del bloque "body" de arriba, sin afectar a index.html. game.html la
+   necesita por lo mismo (su .login ya se centra solo). */
+body.pagina-gestion,
+body.pagina-game {
+  display: block;
+  gap: 0;
+  padding: 0;
+}
+
+/* Fila: sidebar fija a la izquierda + contenido ocupando el resto */
+.layout {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+/* Ventana de login de gestion.html: tarjeta centrada en toda la pantalla. */
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 16px;
+}
+
+.login-tarjeta {
+  width: 100%;
+  max-width: 360px;
+  padding: 32px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(42, 27, 77, 0.18);
+  box-sizing: border-box;
+}
+
+.login-tarjeta h1 {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+}
+
+.mensaje-error {
+  color: #c53030;
+}
+
+/* Texto de ayuda bajo un campo (ej. los requisitos de la contraseña). */
+.ayuda-campo {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+/* El atributo "hidden" solo aplica display: none por defecto del navegador,
+   y cualquier "display" escrito en este CSS (como el "flex" de .layout y
+   .login) le gana. Esta regla lo refuerza para que "hidden" sí oculte. */
+.layout[hidden],
+.login[hidden] {
+  display: none;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 220px;
+  padding: 24px 0;
+  background: #2a1b4d;
+  color: #f5f1ff;
+}
+
+.sidebar-titulo {
+  margin: 0 0 20px;
+  padding: 0 20px;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sidebar-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-item {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-item:hover,
+.sidebar-item.activo {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.contenido {
+  flex: 1;
+  padding: 32px 40px;
+}
+
+/* Grilla de tarjetas para la vista "Mostrar todos" */
+.lista-todos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.item-todos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-item) 60%, black 15%);
+  background: color-mix(in srgb, var(--color-item) 20%, white 80%);
+}
+
+.item-todos-imagen {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.item-todos-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+/* Selector de emoción en la vista "Actualizar" */
+.selector-emocion {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 300px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #4b2e83;
+}
+
+.selector-emocion select,
+.selector-emocion input {
+  padding: 8px 10px;
+  border: 1px solid #c9b8f0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+/* Formularios del CRUD (por ahora, el de "Crear"): una columna de labels,
+   cada uno con su input debajo. */
+.form-crud {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 360px;
+}
+
+.form-crud label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #4b2e83;
+}
+
+.form-crud input {
+  padding: 8px 10px;
+  border: 1px solid #c9b8f0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+/* Checkbox: label en fila, el input no debe estirarse como los demás */
+.form-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.form-checkbox input {
+  width: auto;
+}
+
+.btn-crud {
+  align-self: flex-start;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  background-color: #4b2e83;
+  color: #f5f1ff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-crud:hover {
+  background-color: #6a48ab;
+}
+
+/* Variante roja para acciones que borran datos (vista "Eliminar"). */
+.btn-peligro {
+  background-color: #c53030;
+}
+
+.btn-peligro:hover {
+  background-color: #e05252;
+}
+
+.mensaje {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #4b2e83;
+}
+
+/* Botón de modo oscuro: colores fijos (no cambian entre claro/oscuro), para
+   que siempre se distinga del fondo sea cual sea el modo activo. */
+#toggle-modo {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: #1a1a1a;
+  color: #f2f2f2;
+}
+
+/* Título grande: el degradado de color se "recorta" con la forma del texto
+   gracias a background-clip:text + color:transparent (si no, se vería un
+   rectángulo de color en vez de letras). El text-shadow es el brillo. */
+.titulo-principal {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4b2e83, #8862c9, #4b2e83);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 25px rgba(136, 98, 201, 0.4);
+}
+
+/* Fila: flecha - pila de cartas - flecha, todo centrado */
+.carrusel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+}
+
+/* Botones circulares de navegación. Sin fondo por defecto (solo el borde);
+   el relleno aparece al pasar el mouse (ver :hover debajo). */
+.flecha {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #4b2e83;
+  background: transparent;
+  color: #4b2e83;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.flecha:hover {
+  background-color: #4b2e83;
+  color: #f5f1ff;
+  box-shadow: 0 0 20px 5px rgba(136, 98, 201, 0.6);
+  transform: scale(1.1);
+}
+
+/* Flechas desactivadas (index.js las desactiva si el filtro deja 1 sola
+   emoción): se atenúan y no reaccionan al hover. */
+.flecha:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.flecha:disabled:hover {
+  background-color: transparent;
+  color: #4b2e83;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Sección de filtros sobre la baraja: título + fila de botones tipo "chip"
+   que se acomodan en varias líneas (flex-wrap) si no caben en una. */
+.filtros {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  max-width: 700px;
+}
+
+.filtros-titulo {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4b2e83;
+}
+
+.filtros-botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.filtro-boton {
+  padding: 6px 14px;
+  border: 1px solid #4b2e83;
+  border-radius: 20px;
+  background: transparent;
+  color: #4b2e83;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.filtro-boton:hover {
+  background: rgba(75, 46, 131, 0.12);
+}
+
+.filtro-boton.activo {
+  background: #4b2e83;
+  color: #f5f1ff;
+}
+
+/* Panel flotante del slider de intensidad. position:fixed lo saca del flujo
+   de la columna del body (no empuja nada) y lo deja pegado al borde
+   izquierdo de la ventana aunque se haga scroll. top:50% + translateY(-50%)
+   lo centra verticalmente: el top baja su borde superior a la mitad de la
+   pantalla y el translate lo sube la mitad de su propio alto. */
+.filtro-intensidad {
+  position: fixed;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 24px rgba(42, 27, 77, 0.18);
+  backdrop-filter: blur(6px);
+  color: #4b2e83;
+}
+
+.filtro-intensidad-titulo {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.filtro-intensidad-valor {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* writing-mode: vertical-lr pone el slider de pie (el navegador lo trata
+   como texto escrito de arriba a abajo). Así el 0 quedaría arriba, por eso
+   direction: rtl lo invierte: 0 abajo, 100 arriba. A diferencia de
+   transform: rotate(-90deg), el elemento SÍ ocupa su espacio vertical real,
+   así que el flex del panel lo acomoda bien. accent-color pinta el thumb y
+   la parte "llena" de la barra sin tener que rediseñar el control. */
+.slider-intensidad {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: 220px;
+  margin: 0;
+  accent-color: #4b2e83;
+  cursor: pointer;
+}
+
+/* Botón "Quitar" del panel: mismo estilo de chip que .filtro-boton pero más
+   chico. Sin "display" propio, así el atributo hidden lo oculta sin ayuda. */
+.quitar-intensidad {
+  padding: 4px 10px;
+  border: 1px solid #4b2e83;
+  border-radius: 20px;
+  background: transparent;
+  color: #4b2e83;
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.quitar-intensidad:hover {
+  background: rgba(75, 46, 131, 0.12);
+}
+
+/* En pantallas angostas se pega más al borde y se acorta, para que tape
+   lo menos posible la baraja. */
+@media (max-width: 600px) {
+  .filtro-intensidad {
+    left: 8px;
+    padding: 12px 8px;
+  }
+
+  .slider-intensidad {
+    height: 160px;
+  }
+}
+
+/* Texto "3 / 9" debajo del carrusel; index.js le pone el contenido */
+.contador {
+  margin: 10px 0 0;
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  color: #4b2e83;
+}
+
+/* position:relative + alto fijo: las cartas de adentro son position:absolute
+   (para poder apilarse una sobre otra), así que el contenedor necesita su
+   propio tamaño en vez de "adivinarlo" a partir de sus hijos. */
+.card-container {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  height: 420px;
+  margin: 0 auto;
+}
+
+/* Las 3 cartas de la baraja. "--color-carta" lo define cada carta con JS
+   (card.style.setProperty), y acá se usa con color-mix() para mezclarlo con
+   blanco o negro según el modo — así cada personaje tiene su propio tono,
+   sin necesidad de escribir un color por emoción en el CSS. */
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-areas:
+    "imagen"
+    "nombre"
+    "datos"
+    "relacionadas";
+  width: 100%;
+  background: color-mix(in srgb, var(--color-carta) 55%, white 45%);
+  border: 1px solid color-mix(in srgb, var(--color-carta) 60%, black 15%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 30px 6px color-mix(in srgb, var(--color-carta) 55%, transparent);
+  color: #241a06;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Igual que con .layout/.login: el "display: grid" de .card le gana al
+   atributo hidden, así que sin esta regla las capas sobrantes (cuando el
+   filtro deja menos de 3 emociones) seguirían viéndose. */
+.card[hidden] {
+  display: none;
+}
+
+/* Se usa un instante, justo cuando una carta "salta" a una posición nueva
+   sin que se vea el movimiento (ver siguiente()/anterior() en index.js) */
+.card.sin-transicion {
+  transition: none;
+}
+
+/* Mensaje cuando los filtros no dejan ninguna emoción: ocupa todo el
+   .card-container (inset: 0) y centra el texto justo donde irían las cartas. */
+.sin-resultados {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #4b2e83;
+}
+
+/* Mismo caso que .card[hidden]: el "display: flex" le ganaría a hidden. */
+.sin-resultados[hidden] {
+  display: none;
+}
+
+/* data-pos lo cambia el JS; cada valor es un lugar de la baraja */
+.card[data-pos="0"] {
+  transform: translate(0, 0) rotate(0deg) scale(1);
+  z-index: 3;
+  opacity: 1;
+}
+
+.card[data-pos="1"] {
+  transform: translate(10px, -14px) rotate(5deg) scale(0.93);
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.card[data-pos="2"] {
+  transform: translate(20px, -26px) rotate(10deg) scale(0.86);
+  z-index: 1;
+  opacity: 0.65;
+}
+
+/* Ni se ve: es el "detrás de todo" de la baraja. Sirve tanto para esconder
+   la carta que se va (siguiente) como para el punto de partida de la que
+   entra por atrás (anterior). */
+.card[data-pos="oculta"] {
+  transform: translate(40px, 45px) rotate(-16deg) scale(0.7);
+  z-index: 0;
+  opacity: 0;
+}
+
+/* Foto del personaje, arriba de la carta */
+.card-imagen {
+  grid-area: imagen;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* color:inherit en nombre/datos/relacionadas: en vez de escribir un color
+   de texto acá, toman el que ya quedó definido en .card (que cambia solo
+   entre modo claro y oscuro) — así no hay que repetirlo tres veces. */
+.card-nombre {
+  grid-area: nombre;
+  margin: 0;
+  padding: 10px 10px 0;
+  font-size: 1.1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: inherit;
+}
+
+.card-datos {
+  grid-area: datos;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+  color: inherit;
+}
+
+/* Separación entre los <p> de .card-datos (edad, intensidad, es nueva) */
+.card-datos p {
+  margin: 4px 0;
+}
+
+.card-relacionadas {
+  grid-area: relacionadas;
+  margin: 0;
+  padding: 0 14px 14px;
+  font-size: 0.7rem;
+  text-align: center;
+  list-style: none;
+  color: inherit;
+}
+
+/* Reemplaza el punto por defecto de la lista por una estrella, ya que
+   list-style se puso en "none" arriba */
+.card-relacionadas li::before {
+  content: "✦ ";
+}
+
+/* ---------- Juego de memoria (game.html) ----------
+   Misma paleta que index.html: morado #4b2e83, lavanda de fondo y cada carta
+   teñida con el color de su emoción (--color-carta, igual que .card). */
+
+/* Columna centrada: título, saludo, HUD y tablero */
+.juego {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 48px 16px 70px;
+}
+
+/* Como en .layout/.login: el "display: flex" le ganaría a hidden */
+.juego[hidden] {
+  display: none;
+}
+
+.juego-saludo {
+  margin: -8px 0 0;
+  font-size: 1rem;
+  color: #4b2e83;
+}
+
+/* Barra de estadísticas: tarjeta translúcida como el panel del slider */
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 24px rgba(42, 27, 77, 0.18);
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+}
+
+/* tabular-nums: todos los dígitos del mismo ancho, así el tiempo no "baila"
+   cuando pasa de 00:11 a 00:12 */
+.hud-valor {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #4b2e83;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4b2e83;
+  opacity: 0.75;
+}
+
+/* auto-fill + minmax: caben tantas columnas de mínimo 110px como permita el
+   ancho. Con 780px salen 6 columnas (9 emociones = 18 cartas = 3 filas);
+   en celular, 3 columnas. No hay que calcularlo en JS. */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 780px;
+}
+
+/* perspective da la profundidad del giro 3D (sin ella se vería "plano") */
+.flip-card {
+  aspect-ratio: 3 / 4;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card.encontrada {
+  cursor: default;
+}
+
+/* Lo que gira es este contenedor, con las dos caras adentro.
+   preserve-3d hace que sus hijos vivan en el mismo espacio 3D. */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.flip-card.volteada .flip-card-inner,
+.flip-card.encontrada .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Las dos caras, una encima de la otra. backface-visibility: hidden oculta
+   cada cara cuando queda "de espaldas", así solo se ve la de adelante. */
+.flip-card-reverso,
+.flip-card-cara {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Reverso: el degradado morado del título + la estrella de las listas */
+.flip-card-reverso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4b2e83, #8862c9);
+  color: rgba(245, 241, 255, 0.7);
+  font-size: 2rem;
+  box-shadow: 0 6px 16px rgba(42, 27, 77, 0.25);
+  transition: filter 0.2s;
+}
+
+.flip-card:hover .flip-card-reverso {
+  filter: brightness(1.15);
+}
+
+/* Cara con la emoción: ya viene girada 180°, por eso al girar el
+   contenedor otros 180° queda derecha (180 + 180 = 360). */
+.flip-card-cara {
+  display: flex;
+  flex-direction: column;
+  transform: rotateY(180deg);
+  background: color-mix(in srgb, var(--color-carta) 55%, white 45%);
+  border: 1px solid color-mix(in srgb, var(--color-carta) 60%, black 15%);
+  color: #241a06;
+}
+
+.flip-card-cara img {
+  width: 100%;
+  height: 62%;
+  object-fit: cover;
+}
+
+.flip-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.flip-card-nombre {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.flip-card-intensidad {
+  margin: 0;
+  font-size: 0.65rem;
+}
+
+/* Par encontrado: brillo con el color de la emoción, como las cartas de
+   index.html */
+.flip-card.encontrada .flip-card-cara {
+  box-shadow: 0 0 18px 4px color-mix(in srgb, var(--color-carta) 60%, transparent);
+}
+
+/* Fondo oscurecido que cubre toda la pantalla, con la ventana al centro */
+.overlay-victoria {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  background: rgba(42, 27, 77, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.overlay-victoria[hidden] {
+  display: none;
+}
+
+/* Misma tarjeta blanca que el login */
+.modal-victoria {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(42, 27, 77, 0.18);
+  box-sizing: border-box;
+  text-align: center;
+  color: #2a1b4d;
+  animation: aparecer 0.35s ease both;
+}
+
+@keyframes aparecer {
+  from { transform: scale(0.85) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.victoria-icono {
+  font-size: 3rem;
+}
+
+.modal-victoria h2 {
+  margin: 8px 0 4px;
+  color: #4b2e83;
+}
+
+.victoria-texto {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+}
+
+.stats-victoria {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* .btn-crud trae align-self: flex-start para los forms; aquí va centrado */
+.modal-victoria .btn-crud {
+  align-self: auto;
+}
+
+/* Si el sistema pide menos animaciones (accesibilidad), las cartas se
+   voltean sin giro */
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner,
+  .modal-victoria {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* A partir de acá: todo lo que cambia cuando el <body> tiene la clase
+   "dark-mode" (index.js la agrega/quita con el botón). Cada regla de aquí
+   abajo sobreescribe SOLO las propiedades que deben verse distinto en
+   oscuro; lo que no se menciona (tamaños, paddings, etc.) queda igual. */
+body.dark-mode {
+  background: radial-gradient(circle at 50% 20%, #2b1f4d 0%, #150f2e 45%, #05030f 100%);
+  color: #f2e9d8;
+}
+
+body.dark-mode #toggle-modo {
+  background-color: #f2f2f2;
+  color: #1a1a1a;
+}
+
+body.dark-mode .titulo-principal {
+  background: linear-gradient(90deg, #c9aeff, #9b7ae0, #c9aeff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 25px rgba(201, 174, 255, 0.5);
+}
+
+body.dark-mode .flecha {
+  border-color: #c9aeff;
+  color: #c9aeff;
+}
+
+body.dark-mode .flecha:hover {
+  background-color: #c9aeff;
+  color: #150f2e;
+  box-shadow: 0 0 20px 5px rgba(201, 174, 255, 0.6);
+}
+
+body.dark-mode .contador {
+  color: #c9aeff;
+}
+
+/* Hace falta repetirlo: "body.dark-mode .flecha:hover" es más específico
+   que ".flecha:disabled:hover" y le ganaría (glow y zoom en una flecha
+   desactivada). */
+body.dark-mode .flecha:disabled:hover {
+  background-color: transparent;
+  color: #c9aeff;
+  box-shadow: none;
+  transform: none;
+}
+
+body.dark-mode .filtros-titulo {
+  color: #c9aeff;
+}
+
+body.dark-mode .filtro-boton {
+  border-color: #c9aeff;
+  color: #c9aeff;
+}
+
+body.dark-mode .filtro-boton:hover {
+  background: rgba(201, 174, 255, 0.15);
+}
+
+body.dark-mode .filtro-boton.activo {
+  background: #c9aeff;
+  color: #150f2e;
+}
+
+body.dark-mode .filtro-intensidad {
+  background: rgba(21, 15, 46, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: #c9aeff;
+}
+
+body.dark-mode .slider-intensidad {
+  accent-color: #c9aeff;
+}
+
+body.dark-mode .quitar-intensidad {
+  border-color: #c9aeff;
+  color: #c9aeff;
+}
+
+body.dark-mode .quitar-intensidad:hover {
+  background: rgba(201, 174, 255, 0.15);
+}
+
+body.dark-mode .sin-resultados {
+  color: #c9aeff;
+}
+
+/* La carta en sí: mezcla su --color-carta con negro en vez de blanco, y el
+   glow se hace un poco más intenso para que se note sobre el fondo oscuro */
+body.dark-mode .card {
+  background: color-mix(in srgb, var(--color-carta) 55%, black 45%);
+  border-color: color-mix(in srgb, var(--color-carta) 60%, white 15%);
+  box-shadow: 0 0 35px 10px color-mix(in srgb, var(--color-carta) 65%, transparent);
+  color: #f5f0e6;
+}

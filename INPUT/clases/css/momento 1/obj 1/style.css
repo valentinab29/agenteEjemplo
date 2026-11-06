@@ -1,0 +1,251 @@
+/* Columna centrada de arriba a abajo (botón, título, carrusel, contador).
+   El "gap" es lo que separa cada uno de esos bloques entre sí. El fondo
+   en degradado (radial-gradient) es el look de "modo claro"; se reemplaza
+   completo más abajo en body.dark-mode. */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  font-family: 'Poppins', sans-serif;
+  padding: 48px 0 70px;
+  background: radial-gradient(circle at 50% 15%, #f5f1ff 0%, #e7ddfb 45%, #c9b8f0 100%);
+  color: #2a1b4d;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* Botón de modo oscuro: colores fijos (no cambian entre claro/oscuro), para
+   que siempre se distinga del fondo sea cual sea el modo activo. */
+#toggle-modo {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: #1a1a1a;
+  color: #f2f2f2;
+}
+
+/* Título grande: el degradado de color se "recorta" con la forma del texto
+   gracias a background-clip:text + color:transparent (si no, se vería un
+   rectángulo de color en vez de letras). El text-shadow es el brillo. */
+.titulo-principal {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4b2e83, #8862c9, #4b2e83);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 25px rgba(136, 98, 201, 0.4);
+}
+
+/* Fila: flecha - pila de cartas - flecha, todo centrado */
+.carrusel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 90%;
+  max-width: 900px;
+}
+
+/* Botones circulares de navegación. Sin fondo por defecto (solo el borde);
+   el relleno aparece al pasar el mouse (ver :hover debajo). */
+.flecha {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #4b2e83;
+  background: transparent;
+  color: #4b2e83;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.flecha:hover {
+  background-color: #4b2e83;
+  color: #f5f1ff;
+  box-shadow: 0 0 20px 5px rgba(136, 98, 201, 0.6);
+  transform: scale(1.1);
+}
+
+/* Texto "3 / 9" debajo del carrusel; index.js le pone el contenido */
+.contador {
+  margin: 10px 0 0;
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  color: #4b2e83;
+}
+
+/* position:relative + alto fijo: las cartas de adentro son position:absolute
+   (para poder apilarse una sobre otra), así que el contenedor necesita su
+   propio tamaño en vez de "adivinarlo" a partir de sus hijos. */
+.card-container {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  height: 420px;
+  margin: 0 auto;
+}
+
+/* Las 3 cartas de la baraja. "--color-carta" lo define cada carta con JS
+   (card.style.setProperty), y acá se usa con color-mix() para mezclarlo con
+   blanco o negro según el modo — así cada personaje tiene su propio tono,
+   sin necesidad de escribir un color por emoción en el CSS. */
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-areas:
+    "imagen"
+    "nombre"
+    "datos"
+    "relacionadas";
+  width: 100%;
+  background: color-mix(in srgb, var(--color-carta) 55%, white 45%);
+  border: 1px solid color-mix(in srgb, var(--color-carta) 60%, black 15%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 30px 6px color-mix(in srgb, var(--color-carta) 55%, transparent);
+  color: #241a06;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Se usa un instante, justo cuando una carta "salta" a una posición nueva
+   sin que se vea el movimiento (ver siguiente()/anterior() en index.js) */
+.card.sin-transicion {
+  transition: none;
+}
+
+/* data-pos lo cambia el JS; cada valor es un lugar de la baraja */
+.card[data-pos="0"] {
+  transform: translate(0, 0) rotate(0deg) scale(1);
+  z-index: 3;
+  opacity: 1;
+}
+
+.card[data-pos="1"] {
+  transform: translate(10px, -14px) rotate(5deg) scale(0.93);
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.card[data-pos="2"] {
+  transform: translate(20px, -26px) rotate(10deg) scale(0.86);
+  z-index: 1;
+  opacity: 0.65;
+}
+
+/* Ni se ve: es el "detrás de todo" de la baraja. Sirve tanto para esconder
+   la carta que se va (siguiente) como para el punto de partida de la que
+   entra por atrás (anterior). */
+.card[data-pos="oculta"] {
+  transform: translate(40px, 45px) rotate(-16deg) scale(0.7);
+  z-index: 0;
+  opacity: 0;
+}
+
+/* Foto del personaje, arriba de la carta */
+.card-imagen {
+  grid-area: imagen;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* color:inherit en nombre/datos/relacionadas: en vez de escribir un color
+   de texto acá, toman el que ya quedó definido en .card (que cambia solo
+   entre modo claro y oscuro) — así no hay que repetirlo tres veces. */
+.card-nombre {
+  grid-area: nombre;
+  margin: 0;
+  padding: 10px 10px 0;
+  font-size: 1.1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: inherit;
+}
+
+.card-datos {
+  grid-area: datos;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+  color: inherit;
+}
+
+/* Separación entre los <p> de .card-datos (edad, intensidad, es nueva) */
+.card-datos p {
+  margin: 4px 0;
+}
+
+.card-relacionadas {
+  grid-area: relacionadas;
+  margin: 0;
+  padding: 0 14px 14px;
+  font-size: 0.7rem;
+  text-align: center;
+  list-style: none;
+  color: inherit;
+}
+
+/* Reemplaza el punto por defecto de la lista por una estrella, ya que
+   list-style se puso en "none" arriba */
+.card-relacionadas li::before {
+  content: "✦ ";
+}
+
+/* A partir de acá: todo lo que cambia cuando el <body> tiene la clase
+   "dark-mode" (index.js la agrega/quita con el botón). Cada regla de aquí
+   abajo sobreescribe SOLO las propiedades que deben verse distinto en
+   oscuro; lo que no se menciona (tamaños, paddings, etc.) queda igual. */
+body.dark-mode {
+  background: radial-gradient(circle at 50% 20%, #2b1f4d 0%, #150f2e 45%, #05030f 100%);
+  color: #f2e9d8;
+}
+
+body.dark-mode #toggle-modo {
+  background-color: #f2f2f2;
+  color: #1a1a1a;
+}
+
+body.dark-mode .titulo-principal {
+  background: linear-gradient(90deg, #c9aeff, #9b7ae0, #c9aeff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0 25px rgba(201, 174, 255, 0.5);
+}
+
+body.dark-mode .flecha {
+  border-color: #c9aeff;
+  color: #c9aeff;
+}
+
+body.dark-mode .flecha:hover {
+  background-color: #c9aeff;
+  color: #150f2e;
+  box-shadow: 0 0 20px 5px rgba(201, 174, 255, 0.6);
+}
+
+body.dark-mode .contador {
+  color: #c9aeff;
+}
+
+/* La carta en sí: mezcla su --color-carta con negro en vez de blanco, y el
+   glow se hace un poco más intenso para que se note sobre el fondo oscuro */
+body.dark-mode .card {
+  background: color-mix(in srgb, var(--color-carta) 55%, black 45%);
+  border-color: color-mix(in srgb, var(--color-carta) 60%, white 15%);
+  box-shadow: 0 0 35px 10px color-mix(in srgb, var(--color-carta) 65%, transparent);
+  color: #f5f0e6;
+}
