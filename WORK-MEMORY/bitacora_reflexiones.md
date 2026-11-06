@@ -712,6 +712,12 @@ _(pendiente: se pregunta al cierre de la sesión)_
   `cargarVista()` suelto del final y la llamada inicial a `mostrarEstadoSesionAdmin()` se movió
   al final del archivo. Conceptos: `hidden` = solo interfaz (la seguridad real es RLS), TDZ de
   `let`/`const`, una función que decide el estado visible de la página.
+- `admin.html`: CSS de la zona de acceso (registro + login) reutilizando los tokens del tema
+  (funciona en claro/oscuro). Tarjetas lado a lado con `grid` + `auto-fit`/`minmax` (una sola
+  columna en celular sin `@media`), estado de sesión como píldora, inputs con el mismo estilo
+  del modal, `:user-invalid` para marcar campos mal llenados solo después de tocarlos,
+  `margin-top: auto` para alinear los botones, y "Cerrar sesión" como botón secundario.
+  Conceptos: `auto-fit` vs `auto-fill`, `:user-invalid` vs `:invalid`, flex en columna.
 
 ### Preguntas y decisiones
 

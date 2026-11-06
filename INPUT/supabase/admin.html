@@ -433,6 +433,92 @@
     .form-crud .check { align-self: end; }
     .form-crud .acciones { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
 
+    /* ---------- Acceso de administrador (registro + login) ---------- */
+    /* Las 2 tarjetas van lado a lado en el PC y una debajo de otra en el
+       celular: auto-fit + minmax hace eso sin @media (igual que el grid
+       de productos). El estado de la sesión ocupa toda la fila de arriba */
+    #zona-acceso-admin {
+      max-width: 760px;
+      margin: 3rem auto 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    #estado-sesion-admin {
+      grid-column: 1 / -1;
+      justify-self: center;   /* la "píldora" queda centrada, a su ancho */
+      margin: 0;
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* cada form es una tarjeta; flex en columna apila label → input → label... */
+    #form-registro-admin,
+    #form-login-admin {
+      display: flex;
+      flex-direction: column;
+      padding: 1.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    /* el registro lleva una franja arriba para distinguirlo del login */
+    #form-registro-admin { border-top: 4px solid var(--violet-500); }
+
+    #zona-acceso-admin h3 {
+      margin: 0 0 1.25rem;
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--heading-from), var(--heading-to));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    #zona-acceso-admin label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--label);
+    }
+
+    #zona-acceso-admin input {
+      margin: 0.35rem 0 1rem;
+      font: inherit;
+      color: var(--text);
+      background: var(--input-bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #zona-acceso-admin input:focus {
+      outline: none;
+      border-color: var(--violet-500);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    }
+    /* :user-invalid = el campo está mal (correo sin @, clave corta) pero
+       SOLO después de que la persona lo tocó, no apenas carga la página */
+    #zona-acceso-admin input:user-invalid { border-color: var(--no); }
+
+    /* margin-top: auto empuja el botón al fondo de la tarjeta: así los
+       botones de las 2 tarjetas quedan alineados aunque una sea más alta */
+    #zona-acceso-admin button[type="submit"] { margin-top: auto; }
+
+    /* cerrar sesión: centrado y discreto, con el estilo de botón secundario */
+    #btn-logout-admin {
+      display: block;
+      margin: 0 auto 2rem;
+      background: var(--btn-alt);
+      color: var(--btn-alt-text);
+      box-shadow: none;
+    }
+
     /* ---------- Aviso flotante ("toast") ---------- */
     /* aparece abajo al centro unos segundos tras crear/editar/eliminar */
     #aviso {
