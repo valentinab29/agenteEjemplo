@@ -718,6 +718,10 @@ _(pendiente: se pregunta al cierre de la sesión)_
 
 ### Errores y dudas
 
+- GitHub Desktop: "Failed to push — Authentication failed" con el botón **Push upstream**. Causa:
+  `git remote rename origin upstream` también reescribe `branch.main.remote` → `main` seguía al
+  repo del profe (sin permiso). Se corrigió con `git config branch.main.remote origin`.
+  Concepto: rama de seguimiento (*tracking branch*) ≠ remoto llamado `origin`.
 - `fatal: detected dubious ownership` en git: el disco `D:` no registra dueños de archivos. Se
   evitó con `-c safe.directory=*` por comando, sin tocar la config global.
 

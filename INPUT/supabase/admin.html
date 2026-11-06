@@ -468,6 +468,40 @@
 </head>
 <body>
 
+    <section id="zona-acceso-admin">
+  <p id="estado-sesion-admin" role="status">No has iniciado sesión.</p>
+
+  <form id="form-registro-admin">
+    <h3>Registrar administrador</h3>
+    <label for="admin-registro-nombre">Nombre</label>
+    <input id="admin-registro-nombre" type="text" required>
+
+    <label for="admin-registro-correo">Correo</label>
+    <input id="admin-registro-correo" type="email" required>
+
+    <label for="admin-registro-password">Contraseña</label>
+    <input id="admin-registro-password" type="password" minlength="6" required>
+
+    <button type="submit">Crear cuenta de administrador</button>
+  </form>
+
+  <form id="form-login-admin">
+    <h3>Iniciar sesión</h3>
+    <label for="admin-login-correo">Correo</label>
+    <input id="admin-login-correo" type="email" required>
+
+    <label for="admin-login-password">Contraseña</label>
+    <input id="admin-login-password" type="password" required>
+
+    <button type="submit">Iniciar sesión</button>
+  </form>
+</section>
+
+<button id="btn-logout-admin" type="button" hidden>Cerrar sesión</button>
+
+<!-- el panel real (catálogo, mis clientes...) debe quedar oculto hasta
+     que admin.js confirme sesión iniciada Y que existe fila en admins_practica -->
+
   <header class="barra">
     <div class="contenedor">
       <!-- 🏠 = volver al inicio: tienda, sin búsqueda, arriba del todo -->
