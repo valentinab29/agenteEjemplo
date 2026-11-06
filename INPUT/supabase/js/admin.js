@@ -24,7 +24,27 @@ document.getElementById('form-registro-admin').addEventListener('submit', async 
   }
 
   document.getElementById('estado-sesion-admin').innerText = 'Cuenta de administrador creada. Ya puedes iniciar sesión.';
+  // pasamos al login con el correo ya escrito, para no tener que repetirlo
+  const correo = form.elements['admin-registro-correo'].value.trim();
   form.reset();
+  mostrarFormAcceso('login');
+  document.getElementById('admin-login-correo').value = correo;
+  document.getElementById('admin-login-password').focus();
+});
+
+// Muestra SOLO uno de los dos forms de acceso: 'login' o 'registro'
+function mostrarFormAcceso(cual) {
+  document.getElementById('form-login-admin').hidden = cual !== 'login';
+  document.getElementById('form-registro-admin').hidden = cual !== 'registro';
+}
+
+// Los botones "Regístrate" / "Inicia sesión" dicen a dónde ir en
+// data-mostrar. Un solo listener en la sección los atiende a los dos
+// (delegación de eventos, como en las tarjetas de productos)
+document.getElementById('zona-acceso-admin').addEventListener('click', (evento) => {
+  const boton = evento.target.closest('button[data-mostrar]');
+  if (!boton) return;
+  mostrarFormAcceso(boton.dataset.mostrar);
 });
 
 document.getElementById('form-login-admin').addEventListener('submit', async (evento) => {
@@ -73,13 +93,15 @@ async function mostrarEstadoSesionAdmin() {
 //                   productos en pantalla después de cerrar sesión
 function mostrarPanelAdmin(esAdmin) {
   document.getElementById('panel-admin').hidden = !esAdmin;
-  document.getElementById('form-registro-admin').hidden = esAdmin;
-  document.getElementById('form-login-admin').hidden = esAdmin;
   document.getElementById('btn-logout-admin').hidden = !esAdmin;
 
   if (esAdmin) {
+    // ningún form de acceso: ni login ni registro
+    document.getElementById('form-login-admin').hidden = true;
+    document.getElementById('form-registro-admin').hidden = true;
     cargarVista();   // recién aquí se piden los productos a Supabase
   } else {
+    mostrarFormAcceso('login');   // al salir siempre se vuelve al login
     lista.replaceChildren();
     productosEnPantalla = [];
   }

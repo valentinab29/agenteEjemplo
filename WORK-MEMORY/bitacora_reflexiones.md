@@ -718,6 +718,13 @@ _(pendiente: se pregunta al cierre de la sesión)_
   del modal, `:user-invalid` para marcar campos mal llenados solo después de tocarlos,
   `margin-top: auto` para alinear los botones, y "Cerrar sesión" como botón secundario.
   Conceptos: `auto-fit` vs `auto-fill`, `:user-invalid` vs `:invalid`, flex en columna.
+- `admin.html` / `js/admin.js`: acceso con UN form a la vez. Login visible por defecto, registro
+  con `hidden`; botones `.enlace` con `data-mostrar` ("¿No tienes cuenta? Regístrate" / "¿Ya
+  tienes cuenta? Inicia sesión") + función `mostrarFormAcceso(cual)` con un solo listener en
+  `#zona-acceso-admin` (delegación). Al registrarse pasa al login con el correo ya escrito. Al
+  cerrar sesión siempre vuelve al login. CSS: zona de 420px y una columna; `button.enlace` con
+  aspecto de link. Se agregó `autocomplete` a los inputs. Conceptos: `<button>` vs `<a>` (acción
+  en la página vs navegación), `data-*` + `dataset`, `autocomplete="new-password"`.
 
 ### Preguntas y decisiones
 

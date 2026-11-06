@@ -434,19 +434,17 @@
     .form-crud .acciones { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
 
     /* ---------- Acceso de administrador (registro + login) ---------- */
-    /* Las 2 tarjetas van lado a lado en el PC y una debajo de otra en el
-       celular: auto-fit + minmax hace eso sin @media (igual que el grid
-       de productos). El estado de la sesión ocupa toda la fila de arriba */
+    /* Se ve UNA tarjeta a la vez (login o registro), centrada, con el
+       estado de la sesión encima. grid de una columna + gap = espacio
+       parejo entre la píldora y la tarjeta */
     #zona-acceso-admin {
-      max-width: 760px;
+      max-width: 420px;
       margin: 3rem auto 1.5rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.25rem;
     }
 
     #estado-sesion-admin {
-      grid-column: 1 / -1;
       justify-self: center;   /* la "píldora" queda centrada, a su ancho */
       margin: 0;
       padding: 0.5rem 1.1rem;
@@ -506,9 +504,26 @@
        SOLO después de que la persona lo tocó, no apenas carga la página */
     #zona-acceso-admin input:user-invalid { border-color: var(--no); }
 
-    /* margin-top: auto empuja el botón al fondo de la tarjeta: así los
-       botones de las 2 tarjetas quedan alineados aunque una sea más alta */
-    #zona-acceso-admin button[type="submit"] { margin-top: auto; }
+    #zona-acceso-admin button[type="submit"] { margin-top: 0.5rem; }
+
+    /* "¿No tienes cuenta? Regístrate" */
+    .cambiar-form {
+      margin: 1.25rem 0 0;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    /* Es un <button> (hace una acción en la página, no lleva a otra URL),
+       pero se ve como enlace: se le quita todo lo que trae de "button" */
+    button.enlace {
+      padding: 0;
+      background: none;
+      box-shadow: none;
+      border-radius: 0;
+      color: var(--violet-500);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    button.enlace:hover { transform: none; box-shadow: none; color: var(--label); }
 
     /* cerrar sesión: centrado y discreto, con el estilo de botón secundario */
     #btn-logout-admin {
@@ -554,32 +569,41 @@
 </head>
 <body>
 
-    <section id="zona-acceso-admin">
+<!-- Se ve UN form a la vez: login por defecto; el registro empieza con
+     hidden. Los botones .enlace (data-mostrar) cambian de uno a otro
+     (ver mostrarFormAcceso en admin.js) -->
+<section id="zona-acceso-admin">
   <p id="estado-sesion-admin" role="status">No has iniciado sesión.</p>
-
-  <form id="form-registro-admin">
-    <h3>Registrar administrador</h3>
-    <label for="admin-registro-nombre">Nombre</label>
-    <input id="admin-registro-nombre" type="text" required>
-
-    <label for="admin-registro-correo">Correo</label>
-    <input id="admin-registro-correo" type="email" required>
-
-    <label for="admin-registro-password">Contraseña</label>
-    <input id="admin-registro-password" type="password" minlength="6" required>
-
-    <button type="submit">Crear cuenta de administrador</button>
-  </form>
 
   <form id="form-login-admin">
     <h3>Iniciar sesión</h3>
     <label for="admin-login-correo">Correo</label>
-    <input id="admin-login-correo" type="email" required>
+    <input id="admin-login-correo" type="email" autocomplete="email" required>
 
     <label for="admin-login-password">Contraseña</label>
-    <input id="admin-login-password" type="password" required>
+    <input id="admin-login-password" type="password" autocomplete="current-password" required>
 
     <button type="submit">Iniciar sesión</button>
+    <p class="cambiar-form">¿No tienes cuenta?
+      <button type="button" class="enlace" data-mostrar="registro">Regístrate</button>
+    </p>
+  </form>
+
+  <form id="form-registro-admin" hidden>
+    <h3>Registrar administrador</h3>
+    <label for="admin-registro-nombre">Nombre</label>
+    <input id="admin-registro-nombre" type="text" autocomplete="name" required>
+
+    <label for="admin-registro-correo">Correo</label>
+    <input id="admin-registro-correo" type="email" autocomplete="email" required>
+
+    <label for="admin-registro-password">Contraseña</label>
+    <input id="admin-registro-password" type="password" minlength="6" autocomplete="new-password" required>
+
+    <button type="submit">Crear cuenta de administrador</button>
+    <p class="cambiar-form">¿Ya tienes cuenta?
+      <button type="button" class="enlace" data-mostrar="login">Inicia sesión</button>
+    </p>
   </form>
 </section>
 
