@@ -1,5 +1,5 @@
 // ============================================================
-// prueba2.js — Tienda con tarjetas (CRUD con Supabase)
+// admin.js — Tienda con tarjetas (CRUD con Supabase)
 //
 // El archivo va en 3 partes, de "abajo" (datos) a "arriba" (pantalla):
 //   1. CRUD: funciones que SOLO hablan con Supabase

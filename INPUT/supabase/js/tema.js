@@ -1,6 +1,6 @@
 // Modo claro / oscuro
 //
-// El CSS de prueba2.html ya sabe pintar los dos temas: solo mira si
+// El CSS de admin.html ya sabe pintar los dos temas: solo mira si
 // <html> tiene data-theme="dark" o data-theme="light". Este archivo
 // solo decide CUÁL poner y lo recuerda en localStorage.
 

@@ -141,7 +141,7 @@
     button:active { transform: translateY(0); }
     /* :focus-visible solo se ve al navegar con teclado, no con el mouse */
     button:focus-visible { outline: 3px solid var(--violet-300); outline-offset: 3px; }
-    /* mientras se guarda, el botón queda apagado (ver prueba2.js) */
+    /* mientras se guarda, el botón queda apagado (ver admin.js) */
     button:disabled { opacity: 0.6; cursor: wait; transform: none; }
 
     /* botón "secundario": mismo tamaño, sin degradado */
@@ -483,7 +483,7 @@
       </form>
 
       <button id="btn-nuevo" type="button">+ Nuevo</button>
-      <!-- cambia entre la tienda y la papelera; prueba2.js le pone el
+      <!-- cambia entre la tienda y la papelera; admin.js le pone el
            texto ("🗑 Papelera (3)" o "← Tienda") -->
       <button id="btn-papelera" type="button" class="secundario">🗑 Papelera</button>
       <!-- tema.js le pone el ícono y el aria-label según el tema actual -->
@@ -507,7 +507,7 @@
       <button id="btn-ver-todos" type="button" class="secundario">Ver todos</button>
     </div>
 
-    <!-- prueba2.js llena esto con una <article class="tarjeta"> por producto.
+    <!-- admin.js llena esto con una <article class="tarjeta"> por producto.
          aria-live="polite": el lector de pantalla avisa cuando cambia -->
     <section id="lista-productos" aria-live="polite">
       <p class="vacio">Cargando productos…</p>
@@ -528,7 +528,7 @@
     </details>
   </main>
 
-  <!-- UN solo formulario para crear Y editar: prueba2.js cambia el título
+  <!-- UN solo formulario para crear Y editar: admin.js cambia el título
        y el texto del botón, y lo llena con el producto cuando es editar.
        Cada "name" se llama IGUAL que la columna en Supabase -->
   <dialog id="modal-producto" aria-labelledby="modal-titulo">
@@ -585,8 +585,8 @@
   <p id="aviso" role="status" hidden></p>
 
   <!-- supabaseClient.js crea "db": el cliente ya conectado a tu proyecto
-       de Supabase. prueba2.js lo usa, por eso tiene que cargarse ANTES -->
+       de Supabase. admin.js lo usa, por eso tiene que cargarse ANTES -->
   <script src="js/supabaseClient.js"></script>
-  <script src="js/prueba2.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>

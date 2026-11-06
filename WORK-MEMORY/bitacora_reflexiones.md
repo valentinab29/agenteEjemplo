@@ -699,12 +699,22 @@ _(pendiente: se pregunta al cierre de la sesión)_
   `origin`. Se pidió subir **todo**, incluidos `.vscode/` y `.claude/settings.local.json` (solo tiene la
   anon key, `role: "anon"`, pública por diseño). Se configuró `user.name`/`user.email` solo para este repo.
   Conceptos: `remote` (`origin` vs `upstream`), `.gitignore`, `git push -u`, config local vs global.
+- Renombre `INPUT/supabase/prueba2.html` → `admin.html` y `js/prueba2.js` → `js/admin.js` con
+  `git mv` (git lo registra como renombre `R` y conserva el historial: `git log --follow`). Se
+  actualizó `<script src="js/admin.js">`, comentarios en `admin.html`, encabezado de `admin.js` y
+  comentario de `js/tema.js`. Se borró el `admin.html` vacío que ya existía. `node --check` OK.
+  **Nota:** en `OUTPUT/`, bitácora y CSV anteriores a esta fecha, `prueba2` = el actual `admin`.
 
 ### Preguntas y decisiones
 
 - ¿Confirma el plan y cuál es la URL del repo? → pasó `https://github.com/valentinab29/agenteEjemplo`
   (se toma como confirmación).
 - ¿Repo público o privado? → **pendiente**.
+- ¿Renombrar con `git mv`, actualizar referencias y no tocar el historial (`OUTPUT/`, bitácora,
+  CSV)? ¿`.html` en vez de `.htm`? → **sí** (se usó `.html`).
+- Push: falló desde la terminal de Claude (`could not read Username`, sin `gh` ni login). Se le dio
+  el comando para hacerlo desde su terminal → "no puede", se deja **sin subir**. El commit `0ee9be2` queda
+  local y los remotos ya configurados; queda **pendiente** el push (falta saber qué error le salió).
 
 ### Errores y dudas
 
