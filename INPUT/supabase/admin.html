@@ -49,6 +49,14 @@
       --bg-2: #f5f3ff;
       --bg-3: #e9d5ff;
       --shadow: 0 10px 30px rgba(76, 29, 149, 0.18);
+
+      /* Cursor de estrella: un SVG metido DENTRO del CSS como "data URI"
+         (no hace falta un archivo de imagen). En una URL el # significa
+         otra cosa, por eso los colores van como %23 (= #).
+         "14 14" = el punto exacto que hace clic (el centro de la estrella).
+         -hover = la misma estrella, más grande, para botones */
+      --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%237c3aed' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+      --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%234c1d95' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
     }
 
     /* Modo oscuro, se escribe DOS veces:
@@ -79,6 +87,9 @@
         --bg-2: #1a0f2e;
         --bg-3: #221338;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        /* oscuro: estrella lila clara con borde oscuro, para que resalte */
+        --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23c4b5fd' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+        --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23e9d5ff' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
       }
     }
     :root[data-theme="dark"] {
@@ -103,9 +114,17 @@
       --bg-2: #1a0f2e;
       --bg-3: #221338;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23c4b5fd' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+      --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23e9d5ff' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
     }
 
     * { box-sizing: border-box; }
+
+    /* El cursor se HEREDA: con ponerlo en html, toda la página lo usa.
+       ", auto" = si el navegador no puede cargar la estrella, usa el
+       normal. Los cajones de texto NO lo heredan (el navegador les pone
+       la "I" de escribir, que es más útil ahí) */
+    html { cursor: var(--cursor-estrella), auto; }
 
     body {
       margin: 0;
@@ -133,7 +152,7 @@
       border: none;
       border-radius: 999px;
       padding: 0.7rem 1.4rem;
-      cursor: pointer;
+      /* el cursor (estrella) se define más abajo, junto con summary y checkbox */
       box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
       transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
     }
@@ -143,6 +162,11 @@
     button:focus-visible { outline: 3px solid var(--violet-300); outline-offset: 3px; }
     /* mientras se guarda, el botón queda apagado (ver admin.js) */
     button:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+    /* sobre lo que se puede tocar: la estrella grande (reemplaza la
+       "manito" de cursor: pointer). button:disabled gana igual, porque
+       es más específico (elemento + pseudoclase) */
+    button, summary, input[type="checkbox"] { cursor: var(--cursor-estrella-hover), pointer; }
 
     /* botón "secundario": mismo tamaño, sin degradado */
     button.secundario { background: var(--btn-alt); color: var(--btn-alt-text); box-shadow: none; }
@@ -341,7 +365,7 @@
       box-shadow: var(--shadow);
       padding: 1rem 1.25rem;
     }
-    #datos-crudos summary { cursor: pointer; font-weight: 600; color: var(--label); }
+    #datos-crudos summary { font-weight: 600; color: var(--label); }
     #datos-crudos h3 { font-size: 0.95rem; margin: 1.25rem 0 0.5rem; }
     #datos-crudos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
     #datos-crudos li {

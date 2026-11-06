@@ -725,6 +725,13 @@ _(pendiente: se pregunta al cierre de la sesión)_
   cerrar sesión siempre vuelve al login. CSS: zona de 420px y una columna; `button.enlace` con
   aspecto de link. Se agregó `autocomplete` a los inputs. Conceptos: `<button>` vs `<a>` (acción
   en la página vs navegación), `data-*` + `dataset`, `autocomplete="new-password"`.
+- `admin.html`: cursor de estrella morada según el tema. SVG como *data URI* guardado en tokens
+  `--cursor-estrella` / `--cursor-estrella-hover` (claro: `#7c3aed` borde blanco; oscuro:
+  `#c4b5fd` borde oscuro), definidos en `:root` y en los 2 bloques de modo oscuro. `html` lo
+  usa (se hereda); `button`, `summary` y checkbox usan la estrella grande; inputs de texto
+  conservan la "I". Se quitó `cursor: pointer` de `#datos-crudos summary` (con su `id` le
+  ganaba a la regla nueva). Conceptos: *data URI* y `%23` = `#`, *hotspot* (`14 14`), herencia
+  de `cursor`, `url(...), auto` como respaldo, especificidad.
 
 ### Preguntas y decisiones
 
