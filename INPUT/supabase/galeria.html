@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galería — Mi tienda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- en el <head> para poner el tema ANTES de pintar (sin parpadeo).
+       Es el mismo tema.js del admin: como usan la misma clave en
+       localStorage, el tema que elijas se comparte entre las dos páginas -->
+  <script src="js/tema.js"></script>
+  <style>
+    /* ============================================================
+       TOKENS — copiados de admin.html para que la tienda se vea como
+       una sola marca. (Más adelante se pueden mover a css/tema.css y
+       enlazarlo desde las dos páginas, así se cambian en un solo lugar)
+       ============================================================ */
+    :root {
+      --violet-900: #1e1033;
+      --violet-700: #4c1d95;
+      --violet-500: #7c3aed;
+      --violet-300: #c4b5fd;
+      --violet-100: #ede9fe;
+      --radius: 16px;
+
+      color-scheme: light;
+      --card: #ffffff;
+      --text: #2e1065;
+      --text-suave: #6b5b8a;
+      --heading-from: var(--violet-700);
+      --heading-to: var(--violet-500);
+      --label: var(--violet-700);
+      --border: var(--violet-100);
+      --pill-bg: var(--violet-100);
+      --pill-text: var(--violet-700);
+      --btn-alt: var(--violet-100);
+      --btn-alt-text: var(--violet-700);
+      --header-bg: rgba(255, 255, 255, 0.75);
+      --img-bg: var(--violet-100);
+      --ok: #15803d;
+      --no: #be123c;
+      --bg-glow: rgba(196, 181, 253, 0.6);
+      --bg-1: var(--violet-100);
+      --bg-2: #f5f3ff;
+      --bg-3: #e9d5ff;
+      --shadow: 0 10px 30px rgba(76, 29, 149, 0.18);
+      --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%237c3aed' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+      --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%234c1d95' stroke='white' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --card: #241640;
+        --text: #ede9fe;
+        --text-suave: #b9a8d9;
+        --heading-from: var(--violet-300);
+        --heading-to: #e9d5ff;
+        --label: var(--violet-300);
+        --border: #3b2a5c;
+        --pill-bg: #3b2a5c;
+        --pill-text: #e9d5ff;
+        --btn-alt: #3b2a5c;
+        --btn-alt-text: #ede9fe;
+        --header-bg: rgba(36, 22, 64, 0.8);
+        --img-bg: #3b2a5c;
+        --ok: #4ade80;
+        --no: #fb7185;
+        --bg-glow: rgba(124, 58, 237, 0.35);
+        --bg-1: #120a20;
+        --bg-2: #1a0f2e;
+        --bg-3: #221338;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23c4b5fd' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+        --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23e9d5ff' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --card: #241640;
+      --text: #ede9fe;
+      --text-suave: #b9a8d9;
+      --heading-from: var(--violet-300);
+      --heading-to: #e9d5ff;
+      --label: var(--violet-300);
+      --border: #3b2a5c;
+      --pill-bg: #3b2a5c;
+      --pill-text: #e9d5ff;
+      --btn-alt: #3b2a5c;
+      --btn-alt-text: #ede9fe;
+      --header-bg: rgba(36, 22, 64, 0.8);
+      --img-bg: #3b2a5c;
+      --ok: #4ade80;
+      --no: #fb7185;
+      --bg-glow: rgba(124, 58, 237, 0.35);
+      --bg-1: #120a20;
+      --bg-2: #1a0f2e;
+      --bg-3: #221338;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --cursor-estrella: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23c4b5fd' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 14 14;
+      --cursor-estrella-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z' fill='%23e9d5ff' stroke='%231e1033' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 17 17;
+    }
+
+    /* ---------- Base ---------- */
+    * { box-sizing: border-box; }
+    html { cursor: var(--cursor-estrella), auto; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      padding: 0 1rem 4rem;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 0%, var(--bg-glow), transparent 45%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2) 60%, var(--bg-3));
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    .contenedor { max-width: 1100px; margin-inline: auto; }
+
+    /* ---------- Botones (mismo sistema que el admin) ---------- */
+    button {
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, var(--violet-500), var(--violet-700));
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 1.4rem;
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(124, 58, 237, 0.45); }
+    button:active { transform: translateY(0); }
+    button:focus-visible { outline: 3px solid var(--violet-300); outline-offset: 3px; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+    button, summary { cursor: var(--cursor-estrella-hover), pointer; }
+    button.secundario { background: var(--btn-alt); color: var(--btn-alt-text); box-shadow: none; }
+    button.icono {
+      width: 2.6rem;
+      height: 2.6rem;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Barra de arriba ---------- */
+    .barra {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 -1rem 2rem;
+      padding: 0.9rem 1rem;
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .barra .contenedor { display: flex; align-items: center; gap: 0.75rem; }
+
+    h1, h2 {
+      background: linear-gradient(90deg, var(--heading-from), var(--heading-to));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    h1 { margin: 0 auto 0 0; font-size: 1.5rem; }
+
+    /* botón del carrito con su contador */
+    #btn-carrito { display: flex; align-items: center; gap: 0.5rem; }
+    #contador {
+      /* min-width (no width): con "12" o "120" la píldora crece en vez de
+         cortar el número — en el ejemplo era un círculo fijo de 22px */
+      min-width: 1.5rem;
+      height: 1.5rem;
+      padding: 0 0.4rem;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--violet-700);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    /* pequeño "salto" cuando cambia el número (la clase la pone galeria.js) */
+    #contador.salta { animation: salta 0.35s ease; }
+    @keyframes salta { 50% { transform: scale(1.35); } }
+
+    /* ---------- Título + chips de categoría ---------- */
+    .intro h2 { margin: 0 0 0.25rem; font-size: 2rem; }
+    .intro p { margin: 0 0 1.25rem; color: var(--text-suave); }
+
+    #chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0 0 1.75rem;
+      padding: 0;
+      list-style: none;
+    }
+    #chips button {
+      padding: 0.45rem 1rem;
+      font-size: 0.88rem;
+      background: var(--card);
+      color: var(--pill-text);
+      border: 2px solid var(--border);
+      box-shadow: none;
+    }
+    /* aria-pressed="true" = chip activo. El estilo se engancha al atributo
+       de accesibilidad: así lo que se VE y lo que se ANUNCIA no se separan */
+    #chips button[aria-pressed="true"] {
+      background: linear-gradient(135deg, var(--violet-500), var(--violet-700));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* ---------- Grid de productos ---------- */
+    #galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(76, 29, 149, 0.25); }
+
+    .card-img {
+      position: relative;     /* los badges se ubican respecto a esta caja */
+      aspect-ratio: 4 / 3;    /* todas las fotos del mismo alto, sin importar su tamaño real */
+      background: var(--img-bg);
+      display: grid;
+      place-items: center;
+    }
+    /* position: absolute + inset: 0 = la imagen llena la caja pero NO
+       cuenta para su tamaño. Sin esto, aspect-ratio es solo "preferido":
+       una foto vertical estiraba la caja y las cards quedaban disparejas */
+    .card-img { overflow: hidden; }
+    .card-img img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .card:hover .card-img img { transform: scale(1.05); }
+    /* sin foto (o foto rota): la inicial del nombre */
+    .inicial { font-size: 3rem; font-weight: 700; color: var(--violet-500); }
+
+    .badge {
+      position: absolute;
+      top: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .badge.descuento { left: 0.75rem; background: linear-gradient(135deg, #e11d48, #9f1239); }
+    .badge.agotado { right: 0.75rem; background: var(--violet-900); }
+
+    .card-cuerpo {
+      flex: 1;                /* empuja las acciones al fondo: cards parejas */
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 1rem 1.15rem 0.75rem;
+    }
+    .card-cuerpo h3 { margin: 0; font-size: 1.05rem; }
+    .descripcion { margin: 0; flex: 1; font-size: 0.86rem; color: var(--text-suave); }
+    .precio { display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.35rem; }
+    .precio strong { font-size: 1.3rem; color: var(--violet-500); }
+    .precio s { font-size: 0.88rem; color: var(--text-suave); }
+    .stock { margin: 0; font-size: 0.8rem; color: var(--text-suave); }
+
+    .card-acciones {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.15rem 1.1rem;
+      border-top: 1px solid var(--border);
+    }
+    .card-acciones .agregar { margin-left: auto; padding: 0.55rem 1.1rem; font-size: 0.88rem; }
+    /* feedback "✓ Agregado": verde por un momento (clase puesta por JS) */
+    .card-acciones .agregar.ok { background: var(--ok); box-shadow: none; }
+
+    /* agotado: la foto en gris y el texto apagado */
+    .card.agotada .card-img img { filter: grayscale(1); opacity: 0.6; }
+    .card.agotada:hover { transform: none; }
+
+    /* ---------- Control de cantidad (− 1 +) ---------- */
+    /* se usa en las cards Y en el carrito: una sola clase, dos lugares */
+    .cantidad { display: flex; align-items: center; gap: 0.25rem; }
+    .cantidad button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      line-height: 1;
+      background: var(--btn-alt);
+      color: var(--btn-alt-text);
+      box-shadow: none;
+    }
+    .cantidad output { min-width: 1.75rem; text-align: center; font-weight: 700; }
+
+    .vacio {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      color: var(--text-suave);
+    }
+
+    /* ---------- Carrito lateral ---------- */
+    /* Es un <dialog>, como el modal del admin. showModal() regala:
+       fondo oscuro (::backdrop), Escape para cerrar y el foco atrapado
+       adentro. Con CSS se pega a la derecha y se estira a todo el alto */
+    #carrito {
+      margin: 0 0 0 auto;          /* auto a la izquierda = pegado a la derecha */
+      width: min(420px, 100%);
+      height: 100dvh;              /* dvh: alto real en el celular (sin la barra del navegador) */
+      max-height: none;
+      padding: 0;
+      border: none;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.25);
+    }
+    /* display: flex SOLO cuando está abierto: si se pusiera siempre, le
+       ganaría al display: none con el que el navegador lo esconde */
+    #carrito[open] { display: flex; flex-direction: column; animation: entra 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes entra { from { transform: translateX(100%); } }
+    #carrito::backdrop { background: rgba(30, 16, 51, 0.45); backdrop-filter: blur(3px); }
+
+    .carrito-cabeza {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .carrito-cabeza h2 { margin: 0; font-size: 1.3rem; }
+
+    #lista-carrito {
+      flex: 1;
+      overflow-y: auto;            /* solo la lista hace scroll; cabeza y pie se quedan */
+      margin: 0;
+      padding: 1rem 1.25rem;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    #lista-carrito .vacio { background: none; }
+
+    .item {
+      display: grid;
+      /* foto | info (crece) | quitar */
+      grid-template-columns: 56px 1fr auto;
+      grid-template-areas:
+        "foto info quitar"
+        "foto cant subtotal";
+      gap: 0.35rem 0.75rem;
+      align-items: center;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .item-foto {
+      grid-area: foto;
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--img-bg);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: var(--violet-500);
+    }
+    .item-foto img { width: 100%; height: 100%; object-fit: cover; }
+    .item-info { grid-area: info; min-width: 0; }
+    .item-info strong { display: block; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .item-info span { font-size: 0.8rem; color: var(--text-suave); }
+    .item .cantidad { grid-area: cant; }
+    .item-subtotal { grid-area: subtotal; font-weight: 700; color: var(--violet-500); }
+    .item .quitar {
+      grid-area: quitar;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      background: none;
+      color: var(--text-suave);
+      box-shadow: none;
+      font-size: 1rem;
+    }
+    .item .quitar:hover { color: var(--no); transform: none; }
+
+    .carrito-pie {
+      padding: 1rem 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 0.6rem;
+    }
+    .total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem; }
+    .total strong { font-size: 1.5rem; color: var(--violet-500); }
+
+    /* ---------- Aviso flotante ---------- */
+    /* Es un popover: el navegador le pone por defecto inset: 0 y
+       margin: auto (centrado en la pantalla) y un borde. Se resetean
+       y se ubica abajo al centro */
+    #aviso {
+      inset: auto;
+      border: none;
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      transform: translateX(-50%);
+      z-index: 20;
+      max-width: calc(100% - 2rem);
+      margin: 0;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      background: var(--violet-900);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 560px) {
+      .intro h2 { font-size: 1.6rem; }
+      #btn-carrito .texto { display: none; }   /* en el celular solo 🛒 + número */
+    }
+  </style>
+</head>
+<body>
+
+  <header class="barra">
+    <div class="contenedor">
+      <h1>Mi tienda</h1>
+      <button id="btn-tema" type="button" class="icono secundario" aria-label="Cambiar tema">🌙</button>
+      <!-- el aria-label lo actualiza galeria.js con el número de productos -->
+      <button id="btn-carrito" type="button" aria-label="Abrir carrito">
+        🛒 <span class="texto">Carrito</span>
+        <span id="contador">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="intro">
+      <h2>Nuestros productos</h2>
+      <p>Elige la cantidad y agrégala al carrito.</p>
+    </section>
+
+    <!-- chips de categoría: galeria.js los crea a partir de los productos -->
+    <ul id="chips" aria-label="Filtrar por categoría"></ul>
+
+    <!-- galeria.js llena esto con una <article class="card"> por producto -->
+    <section id="galeria" aria-live="polite"></section>
+  </main>
+
+  <dialog id="carrito" aria-labelledby="carrito-titulo">
+    <div class="carrito-cabeza">
+      <h2 id="carrito-titulo">Tu carrito</h2>
+      <button id="btn-cerrar-carrito" type="button" class="icono secundario" aria-label="Cerrar carrito">✕</button>
+    </div>
+
+    <ul id="lista-carrito"></ul>
+
+    <div class="carrito-pie">
+      <p class="total"><span>Total</span> <strong id="total">$0</strong></p>
+      <button id="btn-pagar" type="button">Proceder al pago →</button>
+      <button id="btn-vaciar" type="button" class="secundario">Vaciar carrito</button>
+    </div>
+  </dialog>
+
+  <!-- popover (no hidden): así el aviso también vive en la "capa
+       superior" y se ve ENCIMA del carrito cuando está abierto -->
+  <p id="aviso" role="status" popover="manual"></p>
+
+  <script src="js/galeria.js"></script>
+</body>
+</html>

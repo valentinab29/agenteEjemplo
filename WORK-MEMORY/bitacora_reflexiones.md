@@ -732,6 +732,25 @@ _(pendiente: se pregunta al cierre de la sesión)_
   conservan la "I". Se quitó `cursor: pointer` de `#datos-crudos summary` (con su `id` le
   ganaba a la regla nueva). Conceptos: *data URI* y `%23` = `#`, *hotspot* (`14 14`), herencia
   de `cursor`, `url(...), auto` como respaldo, especificidad.
+- Galería de productos para el usuario (`INPUT/supabase/galeria.html`, vacío): análisis visual y de
+  UX del CodePen de referencia (`julianbejarano/pen/MYjeYmo`). CodePen bloquea con Cloudflare
+  (403), así que el estudiante pegó HTML/CSS/JS. Hallazgos: grid `auto-fill`, cards con +/− y
+  "Agregar", carrito lateral con overlay. Faltan: quitar/editar items en el carrito, persistencia,
+  tope por stock, estado agotado/descuento, accesibilidad (Escape, foco, `aria-label`), `innerHTML`
+  con datos (riesgo con Supabase). Bugs del ejemplo: `font size` (sin guion, se ignora), fuentes
+  cargadas y no usadas, `promociòn`/`enStock` sin usar. Se propuso plan con datos de prueba con
+  los mismos nombres de columna de `productos_practica`.
+- `galeria.html` + `js/galeria.js` (nuevo, sin Supabase): tokens morados del admin (modo oscuro,
+  estrella; tema compartido vía `tema.js`), chips de categoría (`Set` + `flatMap`,
+  `aria-pressed`), cards con descuento/precio tachado/agotado/inicial sin foto, `− n +` con tope
+  por stock menos lo que ya está en el carrito, carrito `{id: cantidad}` en `localStorage` (con
+  limpieza al cargar), carrito lateral como `<dialog>` (`showModal`: Escape, backdrop, foco),
+  editar/quitar/vaciar, contador con animación, aviso como `popover` (para verse encima del
+  dialog, *top layer*). Todo con `textContent` + delegación. Verificado con capturas de Edge
+  headless (escritorio claro, 500px oscuro). Bug encontrado y corregido: `aspect-ratio` solo es
+  "preferido" → fotos verticales estiraban la card; se arregló con `img { position: absolute;
+  inset: 0 }`. Conceptos: top layer, `popover`, `aspect-ratio` vs contenido, actualizar en sitio
+  vs recrear (foco), datos con nombres de columna para migrar fácil a Supabase.
 
 ### Preguntas y decisiones
 
@@ -743,6 +762,10 @@ _(pendiente: se pregunta al cierre de la sesión)_
 - Ocultar el CRUD hasta el login: ¿A (una página, `hidden`) o B (`login.html` + redirección)? →
   **A**. ¿Policies de RLS en `productos_practica` que exijan estar en `admins_practica`? →
   **pendiente** (se ofreció para después).
+- Galería: ¿paleta morada del admin (tokens + modo oscuro + estrella) o la cálida del ejemplo?
+  ¿Qué extras en la v1 (filtro por categoría, buscador, carrito en `localStorage`)? ¿Confirma el
+  plan? → "haz lo recomendado" → paleta morada (A); se incluyeron chips de categoría y carrito
+  en `localStorage`; buscador **pendiente** para otra versión.
 - Push: falló desde la terminal de Claude (`could not read Username`, sin `gh` ni login). Se le dio
   el comando para hacerlo desde su terminal → "no puede", se deja **sin subir**. El commit `0ee9be2` queda
   local y los remotos ya configurados; queda **pendiente** el push (falta saber qué error le salió).
