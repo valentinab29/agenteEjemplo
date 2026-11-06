@@ -499,8 +499,10 @@
 
 <button id="btn-logout-admin" type="button" hidden>Cerrar sesión</button>
 
-<!-- el panel real (catálogo, mis clientes...) debe quedar oculto hasta
-     que admin.js confirme sesión iniciada Y que existe fila en admins_practica -->
+<!-- el panel real (catálogo, mis clientes...) queda oculto (hidden) hasta
+     que admin.js confirme sesión iniciada Y que existe fila en admins_practica.
+     OJO: hidden solo esconde; lo que protege los datos son las policies (RLS) -->
+<div id="panel-admin" hidden>
 
   <header class="barra">
     <div class="contenedor">
@@ -561,6 +563,8 @@
       <pre id="resultado"></pre>
     </details>
   </main>
+
+</div><!-- /#panel-admin -->
 
   <!-- UN solo formulario para crear Y editar: admin.js cambia el título
        y el texto del botón, y lo llena con el producto cuando es editar.

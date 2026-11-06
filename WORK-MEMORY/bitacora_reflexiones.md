@@ -704,6 +704,14 @@ _(pendiente: se pregunta al cierre de la sesión)_
   actualizó `<script src="js/admin.js">`, comentarios en `admin.html`, encabezado de `admin.js` y
   comentario de `js/tema.js`. Se borró el `admin.html` vacío que ya existía. `node --check` OK.
   **Nota:** en `OUTPUT/`, bitácora y CSV anteriores a esta fecha, `prueba2` = el actual `admin`.
+- `admin.html` / `js/admin.js`: el CRUD solo se ve tras confirmar el login de admin. El estudiante
+  ya había agregado registro (`signUp` + fila en `admins_practica`) y login. Se envolvió
+  `<header class="barra">` + `<main>` en `<div id="panel-admin" hidden>`; nueva función
+  `mostrarPanelAdmin(esAdmin)` que alterna panel / formularios de acceso / botón de cerrar
+  sesión, llama a `cargarVista()` solo si es admin y vacía la lista al salir. Se quitó el
+  `cargarVista()` suelto del final y la llamada inicial a `mostrarEstadoSesionAdmin()` se movió
+  al final del archivo. Conceptos: `hidden` = solo interfaz (la seguridad real es RLS), TDZ de
+  `let`/`const`, una función que decide el estado visible de la página.
 
 ### Preguntas y decisiones
 
@@ -712,6 +720,9 @@ _(pendiente: se pregunta al cierre de la sesión)_
 - ¿Repo público o privado? → **pendiente**.
 - ¿Renombrar con `git mv`, actualizar referencias y no tocar el historial (`OUTPUT/`, bitácora,
   CSV)? ¿`.html` en vez de `.htm`? → **sí** (se usó `.html`).
+- Ocultar el CRUD hasta el login: ¿A (una página, `hidden`) o B (`login.html` + redirección)? →
+  **A**. ¿Policies de RLS en `productos_practica` que exijan estar en `admins_practica`? →
+  **pendiente** (se ofreció para después).
 - Push: falló desde la terminal de Claude (`could not read Username`, sin `gh` ni login). Se le dio
   el comando para hacerlo desde su terminal → "no puede", se deja **sin subir**. El commit `0ee9be2` queda
   local y los remotos ya configurados; queda **pendiente** el push (falta saber qué error le salió).

@@ -50,6 +50,7 @@ async function mostrarEstadoSesionAdmin() {
 
   if (!data.user) {
     estado.innerText = 'No has iniciado sesión.';
+    mostrarPanelAdmin(false);
     return;
   }
 
@@ -57,14 +58,37 @@ async function mostrarEstadoSesionAdmin() {
   // su fila en admins_practica.
   const { data: perfil } = await db.from('admins_practica').select('nombre').eq('id', data.user.id).single();
   estado.innerText = perfil ? 'Sesión iniciada como ' + perfil.nombre + ' (admin).' : 'Sesión iniciada, pero sin perfil de administrador.';
+
+  // Solo con sesión Y perfil se abre el panel
+  mostrarPanelAdmin(Boolean(perfil));
+
+  // Logueado pero sin perfil: igual dejamos cerrar sesión para que
+  // pueda entrar con otra cuenta
+  document.getElementById('btn-logout-admin').hidden = false;
+}
+
+// Una sola función decide qué se ve: el acceso (registro/login) o el panel.
+// esAdmin = true  → panel visible, formularios de acceso escondidos
+// esAdmin = false → al revés, y se vacía la lista para que no queden
+//                   productos en pantalla después de cerrar sesión
+function mostrarPanelAdmin(esAdmin) {
+  document.getElementById('panel-admin').hidden = !esAdmin;
+  document.getElementById('form-registro-admin').hidden = esAdmin;
+  document.getElementById('form-login-admin').hidden = esAdmin;
+  document.getElementById('btn-logout-admin').hidden = !esAdmin;
+
+  if (esAdmin) {
+    cargarVista();   // recién aquí se piden los productos a Supabase
+  } else {
+    lista.replaceChildren();
+    productosEnPantalla = [];
+  }
 }
 
 document.getElementById('btn-logout-admin').addEventListener('click', async () => {
   await db.auth.signOut();
   mostrarEstadoSesionAdmin();
 });
-
-mostrarEstadoSesionAdmin();
 
 
 // ============================================================
@@ -739,6 +763,9 @@ lista.addEventListener('click', async (event) => {
 });
 
 
-// Al abrir la página se cargan los productos solos — ya no hace falta
-// un botón "Traer productos"
-cargarVista();
+// Al abrir la página: primero se revisa la sesión. Si es admin,
+// mostrarPanelAdmin() llama a cargarVista(); si no, se ven los
+// formularios de acceso. Va AL FINAL del archivo porque usa "lista",
+// "vista" y "productosEnPantalla", que con let/const no existen hasta
+// que el navegador llega a la línea donde se declaran.
+mostrarEstadoSesionAdmin();
